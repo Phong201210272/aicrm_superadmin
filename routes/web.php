@@ -91,7 +91,7 @@ Route::get('/employee', function () {
 
 Route::middleware(CheckLogin::class)->prefix('admin')->name('admin.')->group(function () {
     Route::prefix('transaction')->name('transaction.')->group(function () {
-        Route::get('/update-notification', [TransactionController::class, 'updateNotification'])->name('updateNotification');
+        Route::get('/update-notification/{id}', [TransactionController::class, 'updateNotification'])->name('updateNotification');
         Route::get('', [TransactionController::class, 'index'])->name('index');
         Route::get('search', [TransactionController::class, 'search'])->name('search');
         Route::get('payment', [TransactionController::class, 'payment'])->name('payment');
@@ -152,8 +152,9 @@ Route::middleware(CheckLoginSuperAdmin::class)->prefix('super-admin')->name('sup
         Route::get('search', [SuperAdminTransactionController::class, 'search'])->name('search');
         Route::put('confirm/{id}', [SuperAdminTransactionController::class, 'confirmTransaction'])->name('confirm');
         Route::put('reject/{id}', [SuperAdminTransactionController::class, 'rejectTransaction'])->name('reject');
+        Route::get('update-notification/{id}', [SuperAdminTransactionController::class, 'updateNotification'])->name('updateNotification');
     });
-    Route::prefix('transfer')->name('transfer.')->group(function() {
+    Route::prefix('transfer')->name('transfer.')->group(function () {
         Route::get('', [TransferController::class, 'index'])->name('index');
         Route::get('list', [TransferController::class, 'list'])->name('list');
         Route::get('search', [TransferController::class, 'search'])->name('search');

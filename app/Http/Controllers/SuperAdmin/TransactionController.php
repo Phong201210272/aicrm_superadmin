@@ -94,16 +94,16 @@ class TransactionController extends Controller
         }
     }
 
-    public function updateNotification(Request $request)
+    public function updateNotification($id)
     {
-        $transaction = Transaction::find($request->transaction_id);
-
-        if ($transaction) {
-            $transaction->notification = 3; // Cập nhật thành 3
+        try {
+            $transaction = Transaction::find($id);
+            $transaction->notification = 3;
             $transaction->save();
-            return response()->json(['success' => true]);
+            return to_route('super.transaction.index');
+        } catch (Exception $e) {
+            Log::erro('failed to update mark-as-read this transaction: ' . $e->getMessage());
+            return ApiResponse::error('Failed to mark-as-read this transaction', 500);
         }
-
-        return response()->json(['error' => 'Transaction not found'], 404);
     }
 }
