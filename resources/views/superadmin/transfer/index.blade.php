@@ -4,6 +4,43 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+        .action-btn {
+            border-radius: 20px 20px 20px 20px !important;
+            /* Bo góc cho phần bên phải */
+            padding: 0.5rem 5rem !important;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            height: 38px !important;
+            /* Chiều cao cố định để đồng nhất với ô nhập liệu */
+            border: 1px solid #ced4da !important;
+            /* Hiệu ứng chuyển động */
+            white-space: nowrap !important;
+            /* Ngăn chữ xuống dòng */
+        }
+
+        .btn-primary {
+            background-color: #007bff !important;
+            /* Màu nền */
+        }
+
+        .btn-danger {
+            background-color: #dc3545 !important;
+            /* Màu nền */
+        }
+
+        /* Hiệu ứng hover cho nút "Chuyển tiền" */
+        .btn-primary:hover {
+            background-color: #0056b3 !important;
+            /* Màu nền khi hover */
+        }
+
+        /* Hiệu ứng hover cho nút "Xóa" */
+        .btn-danger:hover {
+            background-color: #c82333 !important;
+            /* Màu nền khi hover */
+        }
+
+
         .dataTables_filter {
             margin-top: 1rem !important;
         }
@@ -12,10 +49,6 @@
             border-radius: 20px 0 0 20px !important;
             /* Bo góc cho phần bên trái */
             border: 1px solid #ced4da !important;
-        }
-
-        #end_date {
-            border-radius: 0 20px 20px 0 !important;
         }
 
         .input-group {
@@ -81,7 +114,6 @@
         }
 
         .btn-warning,
-        .btn-danger,
         .btn-secondary,
         .btn-dark,
         .btn-success {
@@ -149,7 +181,7 @@
             background: linear-gradient(135deg, #6f42c1, #007bff) !important;
             color: white !important;
             /* border-top-left-radius: 15px !important;
-                                                                                                                    border-top-right-radius: 5px !important; */
+                                                                                                                                                    border-top-right-radius: 5px !important; */
             padding: 1.5rem !important;
         }
 
@@ -208,10 +240,11 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="row justify-content-center">
+                                <div class="row justify-content-center mb-3">
                                     <div class="col-sm-1 d-flex justify-content-center">
-                                        <a href="{{route('super.transfer.list')}}" class="btn btn-primary btn-sm" id="add-btn">Chuyển tiền</a>
-                                        <button class="btn btn-danger btn-sm" id="clear-btn">Xóa</button>
+                                        <a href="{{ route('super.transfer.list') }}"
+                                            class="btn btn-primary rounded-pill action-btn mr-3" id="add-btn">Chuyển tiền</a>
+                                        <button class="btn btn-danger rounded-pill action-btn" id="clear-btn">Xóa</button>
                                     </div>
                                 </div>
                                 <div class="row">

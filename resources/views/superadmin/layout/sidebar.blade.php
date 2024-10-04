@@ -75,7 +75,7 @@
                         <i class="fas fa-user"></i>
                         <p>Giao dịch</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#sidebarcauhinh">
                         <i class="fas fa-cogs"></i>
@@ -117,7 +117,7 @@
                             </li>
                         </ul>
                     </div>
-                </li> --}}
+                </li>
             </ul>
         </div>
     </div>

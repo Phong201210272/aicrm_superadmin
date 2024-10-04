@@ -169,20 +169,20 @@ Route::middleware(CheckLoginSuperAdmin::class)->prefix('super-admin')->name('sup
     //     Route::delete('delete/{id}', [CampaignController::class, 'delete'])->name('delete');
     //     Route::post('update-status/{id}', [CampaignController::class, 'updateStatus'])->name('updateStatus');
     // });
-    // Route::prefix('zalo')->name('zalo.')->group(function () {
-    //     Route::get('zns', [ZaloController::class, 'index'])->name('zns');
-    //     Route::get('/get-active-oa-name', [ZaloController::class, 'getActiveOaName'])->name('getActiveOaName');
-    //     Route::post('/update-oa-status/{oaId}', [ZaloController::class, 'updateOaStatus'])->name('updateOaStatus');
-    //     Route::post('/refresh-access-token', [ZaloController::class, 'refreshAccessToken'])->name('refreshAccessToken');
-    // });
-    // Route::prefix('message')->name('message.')->group(function () {
-    //     Route::get('', [ZnsMessageController::class, 'znsMessage'])->name('znsMessage');
-    //     Route::get('/quota', [ZnsMessageController::class, 'znsQuota'])->name('znsQuota');
-    //     Route::get('template', [ZnsMessageController::class, 'templateIndex'])->name('znsTemplate');
-    //     Route::get('refresh', [ZnsMessageController::class, 'refreshTemplates'])->name('znsTemplateRefresh');
-    //     Route::get('detail', [ZnsMessageController::class, 'getTemplateDetail'])->name('znsTemplateDetail');
-    //     Route::get('test', [ZnsMessageController::class, 'test'])->name('test');
-    // });
+    Route::prefix('zalo')->name('zalo.')->group(function () {
+        Route::get('zns', [ZaloController::class, 'index'])->name('zns');
+        Route::get('/get-active-oa-name', [ZaloController::class, 'getActiveOaName'])->name('getActiveOaName');
+        Route::post('/update-oa-status/{oaId}', [ZaloController::class, 'updateOaStatus'])->name('updateOaStatus');
+        Route::post('/refresh-access-token', [ZaloController::class, 'refreshAccessToken'])->name('refreshAccessToken');
+    });
+    Route::prefix('message')->name('message.')->group(function () {
+        Route::get('', [ZnsMessageController::class, 'znsMessage'])->name('znsMessage');
+        Route::get('/quota', [ZnsMessageController::class, 'znsQuota'])->name('znsQuota');
+        Route::get('template', [ZnsMessageController::class, 'templateIndex'])->name('znsTemplate');
+        Route::get('refresh', [ZnsMessageController::class, 'refreshTemplates'])->name('znsTemplateRefresh');
+        Route::get('detail', [ZnsMessageController::class, 'getTemplateDetail'])->name('znsTemplateDetail');
+        Route::get('test', [ZnsMessageController::class, 'test'])->name('test');
+    });
     Route::get('/detail/{id}', [SuperAdminController::class, 'getSuperAdminInfor'])->name('detail');
     Route::post('/update/{id}', [SuperAdminController::class, 'updateSuperAdminInfo'])->name('update');
     Route::post('logout', [SuperAdminController::class, 'logout'])->name('logout');
