@@ -141,7 +141,7 @@
                                                 </div>
                                                 <div class="notif-content">
                                                     <span class="block">
-                                                        Người dùng {{ $item->user->name }} đã nạp {{ $item->amount }}VND
+                                                        Người dùng {{ $item->user->name }} đã nạp {{ number_format($item->amount) }} VND
                                                     </span>
                                                     <span class="time">{{ $timeElapsed }}</span>
                                                 </div>

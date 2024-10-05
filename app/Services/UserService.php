@@ -104,7 +104,6 @@ class UserService
             Log::warning('Unauthorized login attempt', ['user' => $user]);
             throw new Exception('Unauthorized');
         }
-
         Auth::login($user);
         // dd($user);
         return ['user' => $user];

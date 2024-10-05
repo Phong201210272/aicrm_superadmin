@@ -222,9 +222,9 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="row justify-content-center">
+                                <div class="row justify-content-center mb-3">
                                     <div class="col-sm-1 d-flex justify-content-center">
-                                        <button class="btn btn-danger btn-sm" id="clear-btn">Xóa</button>
+                                        <button class="btn btn-secondary" id="clear-btn">Đặt lại</button>
                                     </div>
                                 </div>
                                 <div class="row">

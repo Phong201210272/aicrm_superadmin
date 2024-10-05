@@ -16,6 +16,27 @@ class TransferService
         $this->transfer = $transfer;
     }
 
+    public function getPaginatedTransfersForAdmin($id, $startDate, $endDate)
+    {
+        try {
+            $queryBuilder = Transfer::with('user')->where('user_id', $id);
+
+            if ($startDate) {
+                $queryBuilder->whereDate('created_at', '>=', $startDate);
+            }
+
+            if ($endDate) {
+                $queryBuilder->whereDate('created_at', '<=', $endDate);
+            }
+
+            $transfers = $queryBuilder->orderByDesc('created_at')->paginate(10);
+            return $transfers;
+        } catch (Exception $e) {
+            Log::error('Failed to get paginated transfer for admin: ' . $e->getMessage());
+            throw new Exception('Failed to get paginated transfer for admin');
+        }
+    }
+
     public function getPaginatedTransfersForSuperAdmin($query, $startDate, $endDate)
     {
         try {
@@ -54,15 +75,13 @@ class TransferService
         try {
             // Tìm người dùng
             $user = User::find($id);
-            // Lấy và xử lý số tiền
-            $amount = preg_replace('/[^\d]/', '', $data['amount']);
             // Cập nhật số dư ví
-            $user->sub_wallet += $amount;
+            $user->sub_wallet += $data['amount'];
             $user->save();
 
             // Tạo bản ghi giao dịch
             $transfer = $this->transfer->create([
-                'amount' => $amount,
+                'amount' => $data['amount'],
                 'user_id' => $id,
                 'notification' => 1,
             ]);

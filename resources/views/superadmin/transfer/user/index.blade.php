@@ -228,7 +228,7 @@
             });
 
             // Định dạng số khi nhập vào ô nhập
-            $('#transfer-form').on('submit', function() {
+            $('#transfer-amount').on('input', function() {
                 let value = $(this).val();
 
                 // Loại bỏ các ký tự không phải số
@@ -258,6 +258,7 @@
                     });
                     return;
                 }
+                amount = parseInt(amount.replace(/,/g, '').replace(/\./g, ''), 10);
 
                 // Gửi Ajax request để chuyển tiền
                 $.ajax({

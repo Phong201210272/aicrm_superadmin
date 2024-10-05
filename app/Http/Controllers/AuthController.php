@@ -18,21 +18,29 @@ class AuthController extends Controller
     {
         $this->userService = $userService;
     }
-    public function login(Request $request)
+    public function login(Request $request, $username)
     {
+
         try {
+            // $pathUsername = $request->route('username');
+            // dd($username);
             $credentials = $request->only(['email', 'password']);
+            // dd($credentials);
             $result = $this->userService->authenticateUser($credentials);
-            if ($result['user']->role_id == 1) {
-                session()->put('authUser', $result['user']);
-                return redirect()->route('admin.store.index');
-            } elseif ($result['user']->role_id == 2) {
-                session()->put('authUser', $result['user']);
-                return redirect()->route('staff.index');
-            } elseif ($result['user']->role_id == 3) {
-                session()->put('authUser', $result['user']);
-                return redirect()->route('sa.store.index');
+            if ($result['user']['username'] === $username) {
+                if ($result['user']->role_id == 2) {
+                    // dd();
+                    session()->put('authUser', $result['user']);
+                    return redirect()->route('admin.{username}.transaction.index', ['username' => $username]);
+                } elseif ($result['user']->role_id == 1) {
+                    session()->put('authUser', $result['user']);
+                    return redirect()->route('staff.index');
+                } elseif ($result['user']->role_id == 3) {
+                    session()->put('authUser', $result['user']);
+                    return redirect()->route('sa.store.index');
+                }
             }
+            return back();
             // dd($result);
         } catch (\Exception $e) {
             return $this->handleLoginError($request, $e);

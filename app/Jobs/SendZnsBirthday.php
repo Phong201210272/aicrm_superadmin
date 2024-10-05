@@ -7,7 +7,7 @@ use App\Models\OaTemplate;
 use App\Models\User;
 use App\Models\ZaloOa;
 use App\Models\ZnsMessage;
-use App\Services\Admins\ZaloOaService;
+use App\Services\ZaloOaService;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
