@@ -61,14 +61,14 @@ Route::post('/check-account', [SignUpController::class, 'checkAccount'])->name('
 // Route::get('/check-email-exists', [SignUpController::class, 'checkEmailExists'])->name('check-email-exists');
 Route::get('/dang-ky', [SignUpController::class, 'index'])->name('register.index');
 Route::post('/register_account', [SignUpController::class, 'store'])->name('register.signup');
-Route::get('/{username}', function ($username) {
-    return view('auth.login', compact('username'));
-})->name('formlogin');
+// Route::get('/{username}', function ($username) {
+//     return view('auth.login', compact('username'));
+// })->name('formlogin');
 Route::get('/', function () {
     return view('auth.login');
 })->name('formlogin');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/{username}/login', [AuthController::class, 'login'])->name('login');
+// Route::post('/{username}/login', [AuthController::class, 'login'])->name('login');
 Route::get('/verify-otp', [AuthController::class, 'showVerifyOtp'])->name('verify-otp');
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify_otp_confirm');
 Route::middleware(['auth'])->group(function () {
@@ -100,7 +100,7 @@ Route::middleware(CheckLogin::class)->prefix('admin')->name('admin.')->group(fun
     Route::prefix('transfer')->name('transfer.')->group(function () {
         Route::get('', [AdminTransferController::class, 'index'])->name('index');
     });
-    Route::prefix('{username}/transaction')->name('{username}.transaction.')->group(function () {
+    Route::prefix('transaction')->name('transaction.')->group(function () {
         Route::get('/update-notification/{id}', [TransactionController::class, 'updateNotification'])->name('updateNotification');
         Route::get('', [TransactionController::class, 'index'])->name('index');
         Route::get('search', [TransactionController::class, 'search'])->name('search');
@@ -149,7 +149,7 @@ Route::middleware(CheckLogin::class)->prefix('admin')->name('admin.')->group(fun
     // });
 })->middleware('checkRole:1');
 
-Route::get('super/dang-nhap', [SuperAdminController::class, 'loginForm'])->name('super.dang.nhap');
+Route::get('super-dang-nhap', [SuperAdminController::class, 'loginForm'])->name('super.dang.nhap');
 Route::post('super-dang-nhap', [SuperAdminController::class, 'login'])->name('super.login.submit');
 Route::middleware(CheckLoginSuperAdmin::class)->prefix('super-admin')->name('super.')->group(function () {
     Route::prefix('user')->name('user.')->group(function () {

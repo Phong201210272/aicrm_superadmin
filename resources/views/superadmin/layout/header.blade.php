@@ -113,12 +113,14 @@
                     <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-bell"></i>
-                        <span class="notification">{{ $superAdminNotifications->count() ?? '0' }}</span>
+                        <span
+                            class="notification">{{ isset($superAdminNotifications) ? $superAdminNotifications->count() : '0' }}</span>
                     </a>
                     <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
                         <li>
                             <div class="dropdown-title">
-                                You have {{ $superAdminNotifications->count() ?? '0' }} new notification
+                                You have {{ isset($superAdminNotifications) ? $superAdminNotifications->count() : '0' }}
+                                new notifications
                             </div>
                         </li>
                         <li>
@@ -126,27 +128,34 @@
                                 <div class="notif-scroll scrollbar-outer scroll-content"
                                     style="height: auto; margin-bottom: 0px; margin-right: 0px; max-height: 0px;">
                                     <div class="notif-center">
-                                        @foreach ($superAdminNotifications as $item)
-                                            @php
-                                                $createdAt = $item->created_at;
-                                                $timeElapsed = Carbon\Carbon::parse($createdAt)
-                                                    ->locale('vi')
-                                                    ->diffForHumans();
-                                            @endphp
-                                            <a href="{{ route('super.transaction.updateNotification', ['id' => $item->id]) }}"
-                                                class="notification-item mark-as-read">
-                                                <!-- Thêm data-href -->
-                                                <div class="notif-icon notif-primary">
-                                                    <i class="fas fa-bell"></i>
-                                                </div>
-                                                <div class="notif-content">
-                                                    <span class="block">
-                                                        Người dùng {{ $item->user->name }} đã nạp {{ number_format($item->amount) }} VND
-                                                    </span>
-                                                    <span class="time">{{ $timeElapsed }}</span>
-                                                </div>
-                                            </a>
-                                        @endforeach
+                                        @if ($superAdminNotifications->isNotEmpty())
+                                            @foreach ($superAdminNotifications as $item)
+                                                @php
+                                                    $createdAt = $item->created_at;
+                                                    $timeElapsed = Carbon\Carbon::parse($createdAt)
+                                                        ->locale('vi')
+                                                        ->diffForHumans();
+                                                @endphp
+                                                <a href="{{ route('super.transaction.updateNotification', ['id' => $item->id]) }}"
+                                                    class="notification-item mark-as-read">
+                                                    <div class="notif-icon notif-primary">
+                                                        <i class="fas fa-bell"></i>
+                                                    </div>
+                                                    <div class="notif-content">
+                                                        <span class="block">
+                                                            Người dùng {{ $item->user->name }} đã nạp
+                                                            {{ number_format($item->amount) }} VND
+                                                        </span>
+                                                        <span class="time">{{ $timeElapsed }}</span>
+                                                    </div>
+                                                </a>
+                                            @endforeach
+                                        @else
+                                            <div class="notif-center">
+                                                <p>Không có thông báo mới</p>
+                                            </div>
+                                        @endif
+
                                     </div>
                                 </div>
                                 <div class="scroll-element scroll-x">
@@ -164,11 +173,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </li>
-                        <li>
-                            <a class="see-all" href="javascript:void(0);">See all notifications<i
-                                    class="fa fa-angle-right"></i>
-                            </a>
                         </li>
                     </ul>
                 </li>

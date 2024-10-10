@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
+    data-sidebar-image="none" data-preloader="disable">
 
 <head>
 
@@ -12,21 +13,23 @@
     <link rel="shortcut icon" href="asset/images/favicon.ico">
 
     <!-- Layout config Js -->
-    <script src="asset/js/layout.js"></script>
+    <script src="{{ asset('asset/js/layout.js') }}"></script>
     <!-- Bootstrap Css -->
-    <link href="asset/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('asset/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
-    <link href="asset/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('asset/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
-    <link href="asset/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('asset/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
-    <link href="asset/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('asset/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
+
 <body>
-    <div class=" content auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
+    <div
+        class=" content auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
         @yield('content')
     </div>
     <script src="asset/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -36,4 +39,5 @@
     <script src="asset/js/pages/plugins/lord-icon-2.1.0.js"></script>
     <script src="asset/js/plugins.js"></script>
 </body>
+
 </html>

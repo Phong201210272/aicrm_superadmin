@@ -308,7 +308,7 @@
             // Function to fetch and render campaigns
             function fetchCampaigns() {
                 $.ajax({
-                    url: '{{ route('super.campaign.fetch') }}',
+                    url: '{{ route('admin.campaign.fetch') }}',
                     type: 'GET',
                     dataType: 'html',
                     success: function(data) {

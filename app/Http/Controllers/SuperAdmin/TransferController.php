@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\TransferService;
 use App\Services\UserService;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

@@ -48,10 +48,13 @@ class AppServiceProvider extends ServiceProvider
                 $superAdminNotifications = Transaction::orderByDesc('created_at')
                     ->where('notification', 1)
                     ->get();
-
-                // Truyền biến vào view
-                $view->with('superAdminNotifications', $superAdminNotifications);
+            } else {
+                // Đảm bảo biến luôn tồn tại
+                $superAdminNotifications = collect([]);
             }
+
+            // Truyền biến vào view
+            $view->with('superAdminNotifications', $superAdminNotifications);
         });
     }
 }

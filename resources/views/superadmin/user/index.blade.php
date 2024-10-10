@@ -249,6 +249,13 @@
                             <small id="tax_code-error" class="text-danger"></small>
                         </div>
 
+                        <!-- Nạp tiền cho người dùng -->
+
+                        <div class="mb-3">
+                            <label for="sub_wallet" class="form-label">Nạp tiền</label>
+                            <input type="text" class="form-control" id="sub_wallet" name="sub_wallet">
+                            <small id="tax_code-error" class="text-danger"></small>
+                        </div>
                         <button type="submit" class="btn btn-primary">Xác nhận</button>
                     </form>
 
@@ -281,6 +288,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/0.2.0/js/bootstrap-notify.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('#sub_wallet').on('input', function() {
+                let value = $(this).val();
+
+                // Loại bỏ các ký tự không phải số
+                value = value.replace(/[^\d]/g, '');
+
+                // Định dạng số với dấu phẩy
+                if (value) {
+                    $(this).val(Number(value).toLocaleString());
+                } else {
+                    $(this).val(''); // Nếu không có giá trị, đặt lại ô input
+                }
+            });
             // Mở modal thêm khách hàng
             $('#open-add-modal').on('click', function() {
                 $('#add-client-form')[0].reset();

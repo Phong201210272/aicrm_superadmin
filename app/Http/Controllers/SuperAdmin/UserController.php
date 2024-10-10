@@ -7,7 +7,9 @@ use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use App\Services\UserService;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -87,11 +89,35 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã tồn tại.',
             'tax_code.numeric' => 'Mã số thuế phải là số.',
+            'address.required' => 'Vui lòng điền địa chỉ khách hàng '
         ]);
 
         try {
             // Thêm người dùng mới
             $newUser = $this->userService->addNewUser($request->all());
+
+            //Gửi request tới API của Admin
+            $adminApiUrl = 'http://127.0.0.1:8001/api/add-user';
+            $client = new Client();
+
+            $data = $request->all();
+
+            $password = '123456';
+            $hashedPassword = Hash::make($password);
+            $sub_wallet = preg_replace('/[^\d]/', '', $request->sub_wallet);
+            $data['role_id'] = 1; // Thêm role_id vào dữ liệu gửi đi
+            $data['password'] = $hashedPassword;
+            $data['sub_wallet'] = $sub_wallet ?? 0;
+            // $data['']
+            Log::info($data);
+            $response = $client->post($adminApiUrl, [
+                'form_params' => $data, // Gửi tất cả dữ liệu bao gồm role_id
+            ]);
+
+            // Kiểm tra phản hồi từ API Admin
+            if ($response->getStatusCode() !== 200) {
+                throw new Exception('Failed to add user to Admin');
+            }
 
             // Lấy danh sách người dùng đã phân trang
             $paginatedUsers = $this->userService->getPaginatedUser();

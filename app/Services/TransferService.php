@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Transfer;
 use App\Models\User;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -89,6 +90,21 @@ class TransferService
             // Commit transaction
             DB::commit();
 
+            $adminApiUrl = 'http://127.0.0.1:8001/api/transfer';
+
+            $client = new Client();
+            $response = $client->post($adminApiUrl, [
+                'form_params' => [
+                    'user_id' => $id,
+                    'amount' => $transfer->amount,
+                    'notification' => $transfer->notification,
+                ]
+            ]);
+
+            if($response->getStatusCode() !== 200)
+            {
+                throw new Exception(('Failed to tranfer money'));
+            }
             return (object)[
                 'sub_wallet' => $user->sub_wallet,
                 'transfer' => $transfer,

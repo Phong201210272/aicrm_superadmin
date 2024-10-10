@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Services\TransactionService;
 use App\Services\UserService;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -74,6 +75,24 @@ class TransactionController extends Controller
     {
         try {
             $transaction = $this->transactionService->confirmTransaction($id);
+
+            //Gửi Api sang admin để cập nhật trạng thái giao dịch
+            $adminApiUrl = 'http://127.0.0.1:8001/api/confirm-transaction/' . $id;
+            $client = new Client();
+
+            $response = $client->post($adminApiUrl, [
+                'form_params' => [
+                    'status' => $transaction->status,
+                    'notification' => $transaction->notification,
+                    'amount' => $transaction->amount,
+                    'user_id' => $transaction->user_id,
+                ]
+            ]);
+
+            //Kiểm tra phản hồi từ Admin
+            if ($response->getStatusCode() !== 200) {
+                throw new Exception('Failed to confirm transaction in Admin');
+            }
             // session()->flash('success', 'Đã xác nhận giao dịch');
             return response()->json(['success' => true]);
         } catch (Exception $e) {
@@ -86,6 +105,20 @@ class TransactionController extends Controller
     {
         try {
             $transaction = $this->transactionService->rejectTransaction($id);
+
+            $adminApiUrl = 'http://127.0.0.1:8001/api/reject-transaction/' . $id;
+            $client = new Client();
+            $response = $client->post($adminApiUrl, [
+                'form_params' => [
+                    'status' => $transaction->status,
+                    'notification' => $transaction->notification,
+                ]
+            ]);
+
+            if($response->getStatusCode() !== 200)
+            {
+                throw new Exception('Failed to reject transaction in Admin');
+            }
             // session()->flash('success', 'Đã từ chối xác nhận giao dịch');
             return response()->json(['success' => true]);
         } catch (Exception $e) {

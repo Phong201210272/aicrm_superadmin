@@ -47,6 +47,7 @@ class UserService
         DB::beginTransaction();
         $password = '123456';
         $hashedPassword = Hash::make($password);
+        $sub_wallet = preg_replace('/[^\d]/', '', $data['sub_wallet']);
         try {
             Log::info('Creating new user');
             $user = $this->user->create([
@@ -59,6 +60,9 @@ class UserService
                 'expired_at' => Carbon::now()->addMonths(6), // Cộng 6 tháng vào thời gian hiện tại
                 'field' => $data['field'],
                 'username' => $data['username'],
+                'role_id' => 1,
+                'password' => $hashedPassword,
+                'sub_wallet' => $sub_wallet ?? 0,
             ]);
             DB::commit();
             return $user;
