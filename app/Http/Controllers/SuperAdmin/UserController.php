@@ -80,7 +80,8 @@ class UserController extends Controller
             'field' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',
             'tax_code' => 'nullable|numeric',
-            'username' => 'required|unique:users,username'
+            'username' => 'required|unique:users,username',
+            'sub_wallet' => 'nullable'
         ], [
             'username.unique' => 'Tên tài khoản đã tồn tại',
             'phone.numeric' => 'Số điện thoại phải là số.',
