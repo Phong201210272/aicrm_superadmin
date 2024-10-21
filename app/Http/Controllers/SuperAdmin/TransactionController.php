@@ -77,7 +77,7 @@ class TransactionController extends Controller
             $transaction = $this->transactionService->confirmTransaction($id);
 
             //Gửi Api sang admin để cập nhật trạng thái giao dịch
-            $adminApiUrl = 'http://127.0.0.1:8001/api/confirm-transaction/' . $id;
+            $adminApiUrl = 'https://aicrm/api/confirm-transaction/' . $id;
             $client = new Client();
 
             $response = $client->post($adminApiUrl, [
@@ -106,7 +106,7 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->rejectTransaction($id);
 
-            $adminApiUrl = 'http://127.0.0.1:8001/api/reject-transaction/' . $id;
+            $adminApiUrl = 'https://aicrm/api/reject-transaction/' . $id;
             $client = new Client();
             $response = $client->post($adminApiUrl, [
                 'form_params' => [
