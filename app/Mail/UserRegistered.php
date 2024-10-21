@@ -33,9 +33,9 @@ class UserRegistered extends Mailable
             ->with([
                 'name' => $this->user->name,
                 'phone' => $this->user->phone,
-                'store_name' => $this->user->store_name,
-                'password' => $this->password,
-                'domain' => $this->user->domain,            ])
+                'email' => $this->user->phone,
+                'username' => $this->user->username,
+            ])
             ->subject('Hệ thống quản lý phần mềm AICRM.vn');
     }
 

@@ -98,7 +98,7 @@ class UserController extends Controller
             $newUser = $this->userService->addNewUser($request->all());
 
             //Gửi request tới API của Admin
-            $adminApiUrl = 'http://127.0.0.1:8001/api/add-user';
+            $adminApiUrl = 'https://127.0.0.1:8001/api/add-user';
             $client = new Client();
 
             $data = $request->all();
@@ -108,7 +108,11 @@ class UserController extends Controller
             $sub_wallet = preg_replace('/[^\d]/', '', $request->sub_wallet);
             $data['role_id'] = 1; // Thêm role_id vào dữ liệu gửi đi
             $data['password'] = $hashedPassword;
-            $data['sub_wallet'] = $sub_wallet ?? 0;
+            $sub_wallet = preg_replace('/[^\d]/', '', $request->sub_wallet);
+            if (empty($sub_wallet)) {
+                $sub_wallet = 0; // Giá trị mặc định là 0 nếu không có giá trị
+            }
+            $data['sub_wallet'] = $sub_wallet;
             // $data['']
             Log::info($data);
             $response = $client->post($adminApiUrl, [

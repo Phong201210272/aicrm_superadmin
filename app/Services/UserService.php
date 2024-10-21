@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\UserRegistered;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 
@@ -44,10 +46,14 @@ class UserService
 
     public function  addNewUser(array $data)
     {
+        // dd($data);
         DB::beginTransaction();
         $password = '123456';
         $hashedPassword = Hash::make($password);
         $sub_wallet = preg_replace('/[^\d]/', '', $data['sub_wallet']);
+        if (empty($sub_wallet)) {
+            $sub_wallet = 0;
+        }
         try {
             Log::info('Creating new user');
             $user = $this->user->create([
@@ -64,6 +70,7 @@ class UserService
                 'password' => $hashedPassword,
                 'sub_wallet' => $sub_wallet ?? 0,
             ]);
+            Mail::to($data['email'])->send(new UserRegistered($user, $password));
             DB::commit();
             return $user;
         } catch (Exception $e) {
@@ -123,8 +130,7 @@ class UserService
     public function getQualifiedUsers()
     {
         try {
-            return $this->user->where('wallet', '>', 0)
-                ->orderBy('name', 'asc') // Sắp xếp theo trường name theo thứ tự tăng dần
+            return $this->user->orderBy('name', 'asc')
                 ->paginate(10);
         } catch (Exception $e) {
             Log::error('Failed to get qualified users: ' . $e->getMessage());
