@@ -81,8 +81,16 @@ class UserController extends Controller
             'company_name' => 'nullable|string|max:255',
             'tax_code' => 'nullable|numeric',
             'username' => 'required|unique:users,username',
-            'sub_wallet' => 'nullable'
+            'sub_wallet' => 'nullable',
+            'prefix' => 'required|unique:users,prefix'
         ], [
+            'name.required' => 'Vui lòng điền tên khách hàng',
+            'email.required' => 'Vui lòng điền email khách hàng',
+            'phone.required' => 'Vui lòng điền số điện thoại khách hàng',
+            'address.required' => 'Vui lòng điền địa chỉ khách hàng',
+            'username.required' => 'Vui lòng điền tên tài khoản khách hàng',
+            'prefix.required' => 'Vui lòng điền tiền tố tài khoản',
+            'prefix.unique' => 'Tiền tố đã tồn tại',
             'username.unique' => 'Tên tài khoản đã tồn tại',
             'phone.numeric' => 'Số điện thoại phải là số.',
             'phone.digits' => 'Số điện thoại phải đủ 10 ký tự.',
@@ -98,7 +106,8 @@ class UserController extends Controller
             $newUser = $this->userService->addNewUser($request->all());
 
             //Gửi request tới API của Admin
-            $adminApiUrl = 'https://127.0.0.1:8001/api/add-user';
+            $adminApiUrl = 'https://aicrm.vn/api/add-user';
+
             $client = new Client();
 
             $data = $request->all();
@@ -123,7 +132,18 @@ class UserController extends Controller
             if ($response->getStatusCode() !== 200) {
                 throw new Exception('Failed to add user to Admin');
             }
+            $automationUserApiUrl = 'https://aicrm.vn/api/automation-user';
 
+            $client2 = new Client();
+            $response2 = $client2->post($automationUserApiUrl, [
+                'form_params' => [
+                    'user_id' => $newUser->id,
+                ]
+            ]);
+
+            if ($response2->getStatusCode() !== 200) {
+                throw new Exception('Failed to add automation to Admin');
+            }
             // Lấy danh sách người dùng đã phân trang
             $paginatedUsers = $this->userService->getPaginatedUser();
 

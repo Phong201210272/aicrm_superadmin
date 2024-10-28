@@ -194,7 +194,7 @@
                         <!-- Họ tên -->
                         <div class="mb-3">
                             <label for="name" class="form-label">Họ tên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name">
                             <small id="name-error" class="text-danger"></small>
                         </div>
 
@@ -202,14 +202,21 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Tên tài khoản <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+                            <input type="text" class="form-control" id="username" name="username">
                             <small id="username-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Tiền tố -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tiền tố <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="prefix" name="prefix" maxlength="5">
+                            <small id="prefix-error" class="text-danger"></small>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="email" class="form-control" id="email" name="email">
                             <small id="email-error" class="text-danger"></small>
                         </div>
 
@@ -217,7 +224,7 @@
                         <div class="mb-3">
                             <label for="phone" class="form-label">Số điện thoại <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
+                            <input type="text" class="form-control" id="phone" name="phone">
                             <small id="phone-error" class="text-danger"></small>
                         </div>
 
@@ -301,6 +308,13 @@
                     $(this).val(''); // Nếu không có giá trị, đặt lại ô input
                 }
             });
+
+            $('#prefix').on('input', function() {
+                let value = $(this).val().toUpperCase();
+                $(this).val(value);
+            });
+
+
             // Mở modal thêm khách hàng
             $('#open-add-modal').on('click', function() {
                 $('#add-client-form')[0].reset();
@@ -336,6 +350,9 @@
                             // Lấy lỗi từ server và hiển thị dưới mỗi input
                             const errors = xhr.responseJSON.errors;
 
+                            if (errors.prefix) {
+                                $('#prefix-error').text(errors.prefix[0]);
+                            }
                             if (errors.username) {
                                 $('#username-error').text(errors.username[0]);
                             }
