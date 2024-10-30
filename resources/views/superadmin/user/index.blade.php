@@ -408,7 +408,7 @@
                             });
                             $('#table-content').html(response.html);
                             $('#pagination-links').html(response.pagination);
-                            $('#btn-submit-form-user').text('Thêm...')
+                            $('#btn-submit-form-user').text('Thêm')
                             $('#btn-submit-form-user').prop('disabled', false);
                         } else if (response.error) {
                             printErrorMsg(response.validation_errors);

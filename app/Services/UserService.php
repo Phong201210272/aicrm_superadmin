@@ -84,7 +84,11 @@ class UserService
         DB::beginTransaction();
         try {
             Log::info('Updating user');
-            $user = $this->user->where('id' , $data['user_id'])->update([
+            $user = $this->user->where('phone', $data['phone'])->first();
+            if (!$user) {
+                throw new Exception('User not found');
+            }
+            $user->update([
                 'name' => $data['name'],
                 'phone' => $data['phone'],
                 'email' => $data['email'],
@@ -122,7 +126,17 @@ class UserService
             throw new Exception('Failed to find this client by name');
         }
     }
-    public function deleteUserById($id){
+    public function deleteUserByPhone($phone)
+    {
+        try {
+            return $this->user->where('phone', $phone)->firstOrFail()->delete();
+        } catch (Exception $e) {
+            Log::error('Failed to delete client by phone: ' . $e->getMessage());
+            throw new Exception('Failed to delete client by phone');
+        }
+    }
+    public function deleteUserById($id)
+    {
         try {
             return $this->user->findOrFail($id)->delete();
         } catch (Exception $e) {

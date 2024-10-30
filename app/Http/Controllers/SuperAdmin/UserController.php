@@ -205,16 +205,17 @@ class UserController extends Controller
     {
         try {
             $id = $request->id;
+            $phone = User::select('phone')->find($id)->phone;
             $apiURL = 'http://127.0.0.1:8001/api/delete-user';
             $response = Http::delete($apiURL, [
-                'user_id' => $request->id
+                'phone' => $phone
             ]);
             if (!$response->successful()) {
                 return response()->json([
                     'error' => 'Xóa người dùng không thành công ở phía API'
                 ], $response->status());
             }
-            $this->userService->deleteUserById($id);
+            $this->userService->deleteUserByPhone($phone);
             $paginatedUsers = $this->userService->getPaginatedUser();
             return response()->json([
                 'success' => 'Xóa khách hàng thành công',
