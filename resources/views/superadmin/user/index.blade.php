@@ -256,7 +256,7 @@
                             <input type="text" class="form-control" id="sub_wallet" name="sub_wallet">
                             <small id="sub_wallet_error" class="text-danger error-text"></small>
                         </div>
-                        <button type="submit" class="btn btn-primary">Xác nhận</button>
+                        <button type="submit" id="btn-submit-form-user" class="btn btn-primary">Xác nhận</button>
                     </form>
 
                 </div>
@@ -392,7 +392,8 @@
 
                 // Xóa thông báo lỗi trước đó (nếu có)
                 $('small.text-danger').text('');
-
+                $('#btn-submit-form-user').text('Đang thêm...')
+                $('#btn-submit-form-user').prop('disabled', true);
                 $.ajax({
                     url: "{{ route('super.user.store') }}",
                     type: 'POST',
@@ -407,6 +408,8 @@
                             });
                             $('#table-content').html(response.html);
                             $('#pagination-links').html(response.pagination);
+                            $('#btn-submit-form-user').text('Thêm...')
+                            $('#btn-submit-form-user').prop('disabled', false);
                         } else if (response.error) {
                             printErrorMsg(response.validation_errors);
                         }
@@ -548,6 +551,8 @@
             $('#edit_user_btn').click(function(e) {
                 e.preventDefault();
                 var formData = new FormData($('#edit_user_form')[0]);
+                $('#edit_user_btn').text('Đang cập nhật...')
+                $('#edit_user_btn').prop('disabled', true);
                 $.ajax({
                     url: '{{ route('super.user.update') }}',
                     method: 'POST',
@@ -567,11 +572,24 @@
                             }).then(() => {
                                 $("#edit_user_form")[0].reset();
                                 $("#editUserModal").modal('hide');
+                                $('#edit_user_btn').text('Cập nhật')
+                                $('#edit_user_btn').prop('disabled', false);
                                 $('#table-content').html(response.html);
                                 $('#pagination-links').html(response.pagination);
                             });
                         } else if (response.error) {
-                            printErrorMsg(response.validation_errors);
+                            if (response.validation_errors) {
+                                printErrorMsg(response.validation_errors);
+                            } else if (response.api_errors) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi cập nhật',
+                                    text: response.api_errors,
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            }
+
                         }
                     }
                 })
