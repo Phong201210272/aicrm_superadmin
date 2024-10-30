@@ -157,6 +157,9 @@ Route::middleware(CheckLoginSuperAdmin::class)->prefix('super-admin')->name('sup
         Route::get('search', [SuperAdminUserController::class, 'search'])->name('search');
         Route::post('store', [SuperAdminUserController::class, 'store'])->name('store');
         Route::get('detail/{id}', [SuperAdminUserController::class, 'detail'])->name('detail');
+        Route::get('/edit' , [SuperAdminUserController::class , 'edit'])->name('edit');
+        Route::post('/update' , [SuperAdminUserController::class , 'update'])->name('update');
+        Route::delete('/delete', [SuperAdminUserController::class, 'delete'])->name('delete');
     });
     Route::prefix('transaction')->name('transaction.')->group(function () {
         Route::get('', [SuperAdminTransactionController::class, 'index'])->name('index');
