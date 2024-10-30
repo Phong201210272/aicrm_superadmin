@@ -144,6 +144,19 @@ class UserController extends Controller
             if ($response2->getStatusCode() !== 200) {
                 throw new Exception('Failed to add automation to Admin');
             }
+
+            $automationRateApiUrl = 'https://aicrm.vn/api/automation-rate';
+
+            $rateClient = new Client();
+            $rateResponse = $rateClient->post($automationRateApiUrl, [
+                'form_params' => [
+                    'user_id' => $newUser->id,
+                ]
+            ]);
+
+            if ($rateResponse->getStatusCode() !== 200) {
+                throw new Exception('Failed to add automation rate to Admin');
+            }
             // Lấy danh sách người dùng đã phân trang
             $paginatedUsers = $this->userService->getPaginatedUser();
 
