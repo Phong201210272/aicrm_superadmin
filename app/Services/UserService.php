@@ -70,13 +70,36 @@ class UserService
                 'password' => $hashedPassword,
                 'sub_wallet' => $sub_wallet ?? 0,
             ]);
-            Mail::to($data['email'])->send(new UserRegistered($user, $password));
+            //Mail::to($data['email'])->send(new UserRegistered($user, $password));
             DB::commit();
             return $user;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Failed to add new user: ' . $e->getMessage());
             throw new Exception('Failed to add new user');
+        }
+    }
+    public function updateUser(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            Log::info('Updating user');
+            $user = $this->user->where('id' , $data['user_id'])->update([
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'email' => $data['email'],
+                'company_name' => $data['company_name'],
+                'tax_code' => $data['tax_code'],
+                'address' => $data['address'],
+                'field' => $data['field'],
+                'username' => $data['username'],
+            ]);
+            DB::commit();
+            return $user;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to update user: ' . $e->getMessage());
+            throw new Exception('Failed to update user');
         }
     }
 
@@ -97,6 +120,14 @@ class UserService
         } catch (Exception $e) {
             Log::error('Failed to find this client by name: ' . $e->getMessage());
             throw new Exception('Failed to find this client by name');
+        }
+    }
+    public function deleteUserById($id){
+        try {
+            return $this->user->findOrFail($id)->delete();
+        } catch (Exception $e) {
+            Log::error('Failed to delete this client by name: ' . $e->getMessage());
+            throw new Exception('Failed to delete this client by name');
         }
     }
     public function authenticateUser($credentials)
