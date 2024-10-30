@@ -106,13 +106,6 @@ class UserController extends Controller
             ]);
         }
         try {
-            // Thêm người dùng mới
-            //$newUser = $this->userService->addNewUser($request->all());
-
-            //Gửi request tới API của Admin
-            $adminApiUrl = 'https://127.0.0.1:8001/api/add-user';
-            $client = new Client();
-
             $data = $request->all();
 
             $password = '123456';
@@ -125,18 +118,17 @@ class UserController extends Controller
                 $sub_wallet = 0; // Giá trị mặc định là 0 nếu không có giá trị
             }
             $data['sub_wallet'] = $sub_wallet;
-            // $data['']
             Log::info($data);
-            $response = $client->post($adminApiUrl, [
-                'form_params' => $data,
-                'verify' => false, // Bỏ qua xác thực SSL cho môi trường cục bộ
-            ]);
 
-            // Kiểm tra phản hồi từ API Admin
-            if ($response->getStatusCode() !== 200) {
+            //Gửi request tới API của Admin
+            $adminApiUrl = 'http://127.0.0.1:8001/api/add-user';
+            $response = Http::withoutVerifying()->post($adminApiUrl, $data);
+            if (!$response->successful()) {
                 throw new Exception('Failed to add user to Admin');
                 return response()->json(['error' => 'Thêm người dùng vào Admin không thành công'], 500);
             }
+            // Thêm người dùng mới
+            $newUser = $this->userService->addNewUser($request->all());
 
             // Lấy danh sách người dùng đã phân trang
             $paginatedUsers = $this->userService->getPaginatedUser();
@@ -199,7 +191,7 @@ class UserController extends Controller
         $response = Http::post($apiURL, $request->all());
         if ($response->getStatusCode() !== 200) {
             throw new Exception('Failed to update user to Admin');
-            return response()->json(['error' => 'Cập nhật người dùng vào Admin không thành công'], 500);
+            return response()->json(['error' => true, 'api_errors' => 'Cập nhật người dùng vào Admin không thành công'], 500);
         }
         $newUser = $this->userService->updateUser($request->all());
         $paginatedUsers = $this->userService->getPaginatedUser();
