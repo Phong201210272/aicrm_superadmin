@@ -623,35 +623,38 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Đúng, xóa nó đi!'
                 }).then((result) => {
-                    $.ajax({
-                        url: '{{ route('super.user.delete') }}',
-                        method: 'delete',
-                        data: {
-                            id: id,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire(
-                                    'Đã xóa',
-                                    response.success,
-                                    'success'
-                                )
-                                $('#table-content').html(response.html);
-                                $('#pagination-links').html(response.pagination);
-                            } else if (response.error) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Xóa thất bại',
-                                    text: data.error,
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('super.user.delete') }}',
+                            method: 'delete',
+                            data: {
+                                id: id,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Đã xóa',
+                                        response.success,
+                                        'success'
+                                    )
+                                    $('#table-content').html(response.html);
+                                    $('#pagination-links').html(response.pagination);
+                                } else if (response.error) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Xóa thất bại',
+                                        text: data.error,
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });
+                                }
+
+
                             }
+                        })
+                    }
 
-
-                        }
-                    })
                 })
             })
             //validate form
