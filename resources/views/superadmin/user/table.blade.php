@@ -32,7 +32,8 @@
                             data-id="{{ $value->id }}">
                             <i class="fa-solid fa-eye"></i>
                         </a>
-                        <a href="#" id="{{ $value->id }}" class="btn btn-danger deleteUserButton"><i class="fas fa-trash-alt"></i></a>
+                        {{-- <a href="#" id="{{ $value->id }}" class="btn btn-danger deleteUserButton"><i class="fas fa-trash-alt"></i></a> --}}
+                        <button id="{{ $value->id }}" class="btn btn-danger deleteUserButton"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
             @endforeach
