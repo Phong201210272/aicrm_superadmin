@@ -83,9 +83,16 @@ class UserController extends Controller
             'company_name' => 'nullable|string|max:255',
             'tax_code' => 'nullable|numeric',
             'username' => 'required|unique:users,username',
-            'sub_wallet' => 'nullable'
+            'sub_wallet' => 'nullable',
+            'prefix' => 'required|unique:users,prefix'
         ], [
-            'name.required' => 'Tên không được trống',
+            'name.required' => 'Vui lòng điền tên khách hàng',
+            'email.required' => 'Vui lòng điền email khách hàng',
+            'phone.required' => 'Vui lòng điền số điện thoại khách hàng',
+            'address.required' => 'Vui lòng điền địa chỉ khách hàng',
+            'username.required' => 'Vui lòng điền tên tài khoản khách hàng',
+            'prefix.required' => 'Vui lòng điền tiền tố tài khoản',
+            'prefix.unique' => 'Tiền tố đã tồn tại',
             'name.max' => 'Tên không được quá :max ký tự',
             'username.unique' => 'Tên tài khoản đã tồn tại',
             'username.required' => 'Tên tài khoản không được trống',
@@ -106,6 +113,11 @@ class UserController extends Controller
             ]);
         }
         try {
+            //Gửi request tới API của Admin
+            $adminApiUrl = 'https://aicrm.vn/api/add-user';
+
+            $client = new Client();
+
             $data = $request->all();
 
             $password = '123456';
@@ -127,9 +139,36 @@ class UserController extends Controller
                 throw new Exception('Failed to add user to Admin');
                 return response()->json(['error' => 'Thêm người dùng vào Admin không thành công'], 500);
             }
+
+            $automationUserApiUrl = 'https://aicrm.vn/api/automation-user';
+
+            $client2 = new Client();
+            $response2 = $client2->post($automationUserApiUrl, [
+                'form_params' => [
+                    'user_id' => $newUser->id,
+                ]
+            ]);
+
+            if ($response2->getStatusCode() !== 200) {
+                throw new Exception('Failed to add automation to Admin');
+            }
+
             // Thêm người dùng mới
             $newUser = $this->userService->addNewUser($request->all());
 
+
+            $automationRateApiUrl = 'https://aicrm.vn/api/automation-rate';
+
+            $rateClient = new Client();
+            $rateResponse = $rateClient->post($automationRateApiUrl, [
+                'form_params' => [
+                    'user_id' => $newUser->id,
+                ]
+            ]);
+
+            if ($rateResponse->getStatusCode() !== 200) {
+                throw new Exception('Failed to add automation rate to Admin');
+            }
             // Lấy danh sách người dùng đã phân trang
             $paginatedUsers = $this->userService->getPaginatedUser();
 

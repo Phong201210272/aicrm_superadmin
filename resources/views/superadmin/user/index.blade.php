@@ -195,6 +195,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Họ tên <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name">
+
                             <small id="name_error" class="text-danger error-text"></small>
                         </div>
 
@@ -204,6 +205,13 @@
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="username" name="username">
                             <small id="username_error" class="text-danger error-text"></small>
+                        </div>
+
+                        <!-- Tiền tố -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tiền tố <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="prefix" name="prefix" maxlength="5">
+                            <small id="prefix-error" class="text-danger"></small>
                         </div>
 
                         <!-- Email -->
@@ -379,6 +387,13 @@
                     $(this).val(''); // Nếu không có giá trị, đặt lại ô input
                 }
             });
+
+            $('#prefix').on('input', function() {
+                let value = $(this).val().toUpperCase();
+                $(this).val(value);
+            });
+
+
             // Mở modal thêm khách hàng
             $('#open-add-modal').on('click', function() {
                 $('#add-client-form')[0].reset();

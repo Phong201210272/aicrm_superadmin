@@ -3,6 +3,7 @@
     <thead>
         <tr>
             <th>STT</th>
+            <th>Tiền tố</th>
             <th>Tên khách hàng</th>
             <th>SĐT</th>
             <th>Email</th>
@@ -17,6 +18,7 @@
             @foreach ($users as $key => $value)
                 <tr>
                     <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->index + 1 }}</td>
+                    <td>{{ $value->prefix ?? '' }}</td>
                     <td>{{ $value->name ?? '' }}</td>
                     <td>{{ $value->phone ?? '' }}</td>
                     <td>{{ $value->email ?? 'Chưa có email' }}</td>

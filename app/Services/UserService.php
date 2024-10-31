@@ -69,6 +69,7 @@ class UserService
                 'role_id' => 1,
                 'password' => $hashedPassword,
                 'sub_wallet' => $sub_wallet ?? 0,
+                'prefix' => $data['prefix'],
             ]);
             //Mail::to($data['email'])->send(new UserRegistered($user, $password));
             DB::commit();
