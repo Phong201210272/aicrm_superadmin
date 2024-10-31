@@ -26,9 +26,13 @@
                     <td>{{ Carbon\Carbon::parse($value->created_at)->format('d/m/Y') }}</td>
                     <td>{{ Carbon\Carbon::parse($value->expired_at)->format('d/m/Y') }}</td>
                     <td style="text-align:center">
-                        <a class="btn btn-warning" href="javascript:void(0)" id="user-detail" data-id="{{ $value->id }}">
+                        <a href="#" id="{{ $value->id }}" data-bs-toggle="modal" data-bs-target="#editUserModal" class="btn btn-primary editUserIcon"><i
+                                class="fas fa-user-edit"></i></a>
+                        <a class="btn btn-warning" href="javascript:void(0)" id="user-detail"
+                            data-id="{{ $value->id }}">
                             <i class="fa-solid fa-eye"></i>
                         </a>
+                        <a href="#" id="{{ $value->id }}" class="btn btn-danger deleteUserButton"><i class="fas fa-trash-alt"></i></a>
                     </td>
                 </tr>
             @endforeach

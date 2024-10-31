@@ -10,7 +10,9 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -72,7 +74,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Validate dữ liệu đầu vào
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|numeric|digits:10|unique:users,phone',
@@ -91,20 +93,26 @@ class UserController extends Controller
             'username.required' => 'Vui lòng điền tên tài khoản khách hàng',
             'prefix.required' => 'Vui lòng điền tiền tố tài khoản',
             'prefix.unique' => 'Tiền tố đã tồn tại',
+            'name.max' => 'Tên không được quá :max ký tự',
             'username.unique' => 'Tên tài khoản đã tồn tại',
+            'username.required' => 'Tên tài khoản không được trống',
+            'phone.required' => 'Số điện thoại không được trống',
             'phone.numeric' => 'Số điện thoại phải là số.',
             'phone.digits' => 'Số điện thoại phải đủ 10 ký tự.',
             'phone.unique' => 'Số điện thoại này đã tồn tại.',
+            'email.required' => 'Email không được trống',
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã tồn tại.',
             'tax_code.numeric' => 'Mã số thuế phải là số.',
-            'address.required' => 'Vui lòng điền địa chỉ khách hàng '
+            'address.required' => 'Vui lòng điền địa chỉ khách hàng'
         ]);
-
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'validation_errors' => $validator->errors()
+            ]);
+        }
         try {
-            // Thêm người dùng mới
-            $newUser = $this->userService->addNewUser($request->all());
-
             //Gửi request tới API của Admin
             $adminApiUrl = 'https://aicrm.vn/api/add-user';
 
@@ -122,16 +130,16 @@ class UserController extends Controller
                 $sub_wallet = 0; // Giá trị mặc định là 0 nếu không có giá trị
             }
             $data['sub_wallet'] = $sub_wallet;
-            // $data['']
             Log::info($data);
-            $response = $client->post($adminApiUrl, [
-                'form_params' => $data, // Gửi tất cả dữ liệu bao gồm role_id
-            ]);
 
-            // Kiểm tra phản hồi từ API Admin
-            if ($response->getStatusCode() !== 200) {
+            //Gửi request tới API của Admin
+            $adminApiUrl = 'http://127.0.0.1:8001/api/add-user';
+            $response = Http::withoutVerifying()->post($adminApiUrl, $data);
+            if (!$response->successful()) {
                 throw new Exception('Failed to add user to Admin');
+                return response()->json(['error' => 'Thêm người dùng vào Admin không thành công'], 500);
             }
+
             $automationUserApiUrl = 'https://aicrm.vn/api/automation-user';
 
             $client2 = new Client();
@@ -144,6 +152,10 @@ class UserController extends Controller
             if ($response2->getStatusCode() !== 200) {
                 throw new Exception('Failed to add automation to Admin');
             }
+
+            // Thêm người dùng mới
+            $newUser = $this->userService->addNewUser($request->all());
+
 
             $automationRateApiUrl = 'https://aicrm.vn/api/automation-rate';
 
@@ -173,6 +185,89 @@ class UserController extends Controller
 
             return response()->json([
                 'error' => 'Thêm khách hàng không thành công'
+            ], 500);
+        }
+    }
+
+    public function edit(Request $request)
+    {
+        $id = $request->id;
+        $user = User::find($id);
+        return response()->json($user);
+    }
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $request->user_id,
+            'phone' => 'required|numeric|digits:10|unique:users,phone,' . $request->user_id,
+            'address' => 'required|string|max:255',
+            'field' => 'nullable|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'tax_code' => 'nullable|numeric',
+            'username' => 'required|unique:users,username,' . $request->user_id,
+            'sub_wallet' => 'nullable'
+        ], [
+            'username.unique' => 'Tên tài khoản đã tồn tại',
+            'username.required' => 'Tên tài khoản không được trống',
+            'phone.required' => 'Số điện thoại không được trống',
+            'phone.numeric' => 'Số điện thoại phải là số.',
+            'phone.digits' => 'Số điện thoại phải đủ 10 ký tự.',
+            'phone.unique' => 'Số điện thoại này đã tồn tại.',
+            'email.required' => 'Email không được trống',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email này đã tồn tại.',
+            'tax_code.numeric' => 'Mã số thuế phải là số.',
+            'address.required' => 'Vui lòng điền địa chỉ khách hàng'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'validation_errors' => $validator->errors()
+            ]);
+        }
+        $apiURL = 'http://127.0.0.1:8001/api/update-user';
+        $response = Http::post($apiURL, $request->all());
+        if ($response->getStatusCode() !== 200) {
+            throw new Exception('Failed to update user to Admin');
+            return response()->json(['error' => true, 'api_errors' => 'Cập nhật người dùng vào Admin không thành công'], 500);
+        }
+        $newUser = $this->userService->updateUser($request->all());
+        $paginatedUsers = $this->userService->getPaginatedUser();
+        return response()->json([
+            'success' => 'Cập nhật khách hàng thành công',
+            'html' => view('superadmin.user.table', ['users' => $paginatedUsers])->render(),
+            'pagination' => $paginatedUsers->links('pagination::custom')->render()
+        ]);
+    }
+    public function delete(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $phone = User::select('phone')->find($id)->phone;
+            $apiURL = 'http://127.0.0.1:8001/api/delete-user';
+            $response = Http::delete($apiURL, [
+                'phone' => $phone
+            ]);
+            if (!$response->successful()) {
+                return response()->json([
+                    'error' => 'Xóa người dùng không thành công ở phía API'
+                ], $response->status());
+            }
+            $this->userService->deleteUserByPhone($phone);
+            $paginatedUsers = $this->userService->getPaginatedUser();
+            return response()->json([
+                'success' => 'Xóa khách hàng thành công',
+                'html' => view('superadmin.user.table', ['users' => $paginatedUsers])->render(),
+                'pagination' => $paginatedUsers->links('pagination::custom')->render()
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to delete user: ' . $e->getMessage(), [
+                'user_id' => $request->id
+            ]);
+
+            return response()->json([
+                'error' => 'Xóa người dùng không thành công'
             ], 500);
         }
     }

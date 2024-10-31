@@ -90,21 +90,21 @@ class TransferService
             // Commit transaction
             DB::commit();
 
-            $adminApiUrl = 'https://aicrm.vn/api/transfer';
+            // $adminApiUrl = 'https://aicrm.vn/api/transfer';
 
-            $client = new Client();
-            $response = $client->post($adminApiUrl, [
-                'form_params' => [
-                    'user_id' => $id,
-                    'amount' => $transfer->amount,
-                    'notification' => $transfer->notification,
-                ]
-            ]);
+            // $client = new Client();
+            // $response = $client->post($adminApiUrl, [
+            //     'form_params' => [
+            //         'user_id' => $id,
+            //         'amount' => $transfer->amount,
+            //         'notification' => $transfer->notification,
+            //     ]
+            // ]);
 
-            if($response->getStatusCode() !== 200)
-            {
-                throw new Exception(('Failed to tranfer money'));
-            }
+            // if($response->getStatusCode() !== 200)
+            // {
+            //     throw new Exception(('Failed to tranfer money'));
+            // }
             return (object)[
                 'sub_wallet' => $user->sub_wallet,
                 'transfer' => $transfer,
