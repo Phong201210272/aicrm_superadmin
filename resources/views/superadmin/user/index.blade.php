@@ -211,7 +211,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Tiền tố <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="prefix" name="prefix" maxlength="5">
-                            <small id="prefix-error" class="text-danger"></small>
+                            <small id="prefix_error" class="text-danger error-text"></small>
                         </div>
 
                         <!-- Email -->
@@ -264,6 +264,16 @@
                             <input type="text" class="form-control" id="sub_wallet" name="sub_wallet">
                             <small id="sub_wallet_error" class="text-danger error-text"></small>
                         </div>
+
+                        {{-- Hạn sử dụng tài khoản --}}
+                        <div class="mb-3">
+                            <label for="expired_at" class="form-label">Hạn sử dụng</label>
+                            <select name="expired_at" id="expired_at" class="form-select">
+                                <option value="6">6 tháng</option>
+                                <option value="12">12 tháng</option>
+                                <option value="24">24 tháng</option>
+                            </select>
+                        </div>
                         <button type="submit" id="btn-submit-form-user" class="btn btn-primary">Xác nhận</button>
                     </form>
 
@@ -298,6 +308,12 @@
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="usernameEdit" name="username">
                             <small id="username_error" class="text-danger error-text"></small>
+                        </div>
+                        <!-- Tiền tố -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tiền tố <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="prefixEdit" name="prefix" maxlength="5">
+                            <small id="prefix_error" class="text-danger error-text"></small>
                         </div>
 
                         <!-- Email -->
@@ -341,6 +357,14 @@
                             <label for="tax_code" class="form-label">Mã số thuế</label>
                             <input type="text" class="form-control" id="tax_codeEdit" name="tax_code">
                             <small id="tax_code_error" class="text-danger error-text"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expired_at" class="form-label">Hạn sử dụng</label>
+                            <select name="expired_at" id="expired_atEdit" class="form-select">
+                                <option value="6">6 tháng</option>
+                                <option value="12">12 tháng</option>
+                                <option value="24">24 tháng</option>
+                            </select>
                         </div>
                         <button type="submit" id="edit_user_btn" class="btn btn-primary">Cập nhật</button>
                     </form>
@@ -429,37 +453,6 @@
                             printErrorMsg(response.validation_errors);
                         }
                     }
-                    // error: function(xhr) {
-                    //     if (xhr.status === 422) {
-                    //         // Lấy lỗi từ server và hiển thị dưới mỗi input
-                    //         const errors = xhr.responseJSON.errors;
-
-                    //         if (errors.username) {
-                    //             $('#username-error').text(errors.username[0]);
-                    //         }
-                    //         if (errors.name) {
-                    //             $('#name-error').text(errors.name[0]);
-                    //         }
-                    //         if (errors.email) {
-                    //             $('#email-error').text(errors.email[0]);
-                    //         }
-                    //         if (errors.phone) {
-                    //             $('#phone-error').text(errors.phone[0]);
-                    //         }
-                    //         if (errors.address) {
-                    //             $('#address-error').text(errors.address[0]);
-                    //         }
-                    //         if (errors.field) {
-                    //             $('#field-error').text(errors.field[0]);
-                    //         }
-                    //         if (errors.company_name) {
-                    //             $('#company_name-error').text(errors.company_name[0]);
-                    //         }
-                    //         if (errors.tax_code) {
-                    //             $('#tax_code-error').text(errors.tax_code[0]);
-                    //         }
-                    //     }
-                    // }
                 });
             });
 
@@ -549,16 +542,24 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        $('#nameEdit').val(response.name)
-                        $('#usernameEdit').val(response.username)
-                        $('#emailEdit').val(response.email)
-                        $('#phoneEdit').val(response.phone)
-                        $('#addressEdit').val(response.address)
-                        $('#company_nameEdit').val(response.company_name)
-                        $('#fieldEdit').val(response.field)
-                        $('#tax_codeEdit').val(response.tax_code)
-                        $('#sub_walletEdit').val(response.sub_wallet)
-                        $('#user_id_edit').val(response.id)
+                        $('#nameEdit').val(response.user.name)
+                        $('#usernameEdit').val(response.user.username)
+                        $('#prefixEdit').val(response.user.prefix)
+                        $('#emailEdit').val(response.user.email)
+                        $('#phoneEdit').val(response.user.phone)
+                        $('#addressEdit').val(response.user.address)
+                        $('#company_nameEdit').val(response.user.company_name)
+                        $('#fieldEdit').val(response.user.field)
+                        $('#tax_codeEdit').val(response.user.tax_code)
+                        $('#sub_walletEdit').val(response.user.sub_wallet)
+                        $('#user_id_edit').val(response.user.id)
+                        $('#expired_atEdit option').each(function() {
+                            if ($(this).val() == response.months) {
+                                $(this).prop('selected', true);
+                            } else {
+                                $(this).prop('selected', false);
+                            }
+                        });
                     }
                 })
             })

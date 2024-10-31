@@ -63,7 +63,7 @@ class UserService
                 'company_name' => $data['company_name'],
                 'tax_code' => $data['tax_code'],
                 'address' => $data['address'],
-                'expired_at' => Carbon::now()->addMonths(6), // Cộng 6 tháng vào thời gian hiện tại
+                'expired_at' => $data['expired_at'],
                 'field' => $data['field'],
                 'username' => $data['username'],
                 'role_id' => 1,
@@ -98,6 +98,7 @@ class UserService
                 'address' => $data['address'],
                 'field' => $data['field'],
                 'username' => $data['username'],
+                'expired_at' => $data['expired_at']
             ]);
             DB::commit();
             return $user;

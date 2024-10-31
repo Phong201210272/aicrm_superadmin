@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use App\Services\UserService;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -114,10 +115,6 @@ class UserController extends Controller
         }
         try {
             //Gửi request tới API của Admin
-            $adminApiUrl = 'https://aicrm.vn/api/add-user';
-
-            $client = new Client();
-
             $data = $request->all();
 
             $password = '123456';
@@ -130,8 +127,9 @@ class UserController extends Controller
                 $sub_wallet = 0; // Giá trị mặc định là 0 nếu không có giá trị
             }
             $data['sub_wallet'] = $sub_wallet;
+            $monthExpiredAt = (int) $request->expired_at;
+            $data['expired_at'] = Carbon::now()->addMonths($monthExpiredAt)->toDateTimeString();
             Log::info($data);
-
             //Gửi request tới API của Admin
             $adminApiUrl = 'http://127.0.0.1:8001/api/add-user';
             $response = Http::withoutVerifying()->post($adminApiUrl, $data);
@@ -140,7 +138,9 @@ class UserController extends Controller
                 return response()->json(['error' => 'Thêm người dùng vào Admin không thành công'], 500);
             }
 
-            $automationUserApiUrl = 'https://aicrm.vn/api/automation-user';
+            // Thêm người dùng mới
+            $newUser = $this->userService->addNewUser($data);
+            $automationUserApiUrl = 'http://127.0.0.1:8001/api/automation-user';
 
             $client2 = new Client();
             $response2 = $client2->post($automationUserApiUrl, [
@@ -153,11 +153,8 @@ class UserController extends Controller
                 throw new Exception('Failed to add automation to Admin');
             }
 
-            // Thêm người dùng mới
-            $newUser = $this->userService->addNewUser($request->all());
 
-
-            $automationRateApiUrl = 'https://aicrm.vn/api/automation-rate';
+            $automationRateApiUrl = 'http://127.0.0.1:8001/api/automation-rate';
 
             $rateClient = new Client();
             $rateResponse = $rateClient->post($automationRateApiUrl, [
@@ -193,7 +190,8 @@ class UserController extends Controller
     {
         $id = $request->id;
         $user = User::find($id);
-        return response()->json($user);
+        $months = $user->created_at->diffInMonths($user->expired_at);
+        return response()->json(['user' => $user, 'months' => $months]);
     }
     public function update(Request $request)
     {
@@ -206,7 +204,8 @@ class UserController extends Controller
             'company_name' => 'nullable|string|max:255',
             'tax_code' => 'nullable|numeric',
             'username' => 'required|unique:users,username,' . $request->user_id,
-            'sub_wallet' => 'nullable'
+            'sub_wallet' => 'nullable',
+            'prefix' => 'required|unique:users,prefix,' . $request->user_id
         ], [
             'username.unique' => 'Tên tài khoản đã tồn tại',
             'username.required' => 'Tên tài khoản không được trống',
@@ -218,7 +217,9 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã tồn tại.',
             'tax_code.numeric' => 'Mã số thuế phải là số.',
-            'address.required' => 'Vui lòng điền địa chỉ khách hàng'
+            'address.required' => 'Vui lòng điền địa chỉ khách hàng',
+            'prefix.required' => 'Vui lòng điền tiền tố tài khoản',
+            'prefix.unique' => 'Tiền tố đã tồn tại',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -226,13 +227,19 @@ class UserController extends Controller
                 'validation_errors' => $validator->errors()
             ]);
         }
+        $data = $request->all();
+        //Cập nhật hạn sử dụng
+        $createdAt = User::select('created_at')->find($request->user_id)->created_at;
+        $data['expired_at'] = $createdAt->copy()->addMonths($request->expired_at)->toDateTimeString();
+        Log::info($data);
+        /////////////////////
         $apiURL = 'http://127.0.0.1:8001/api/update-user';
-        $response = Http::post($apiURL, $request->all());
+        $response = Http::post($apiURL, $data);
         if ($response->getStatusCode() !== 200) {
             throw new Exception('Failed to update user to Admin');
             return response()->json(['error' => true, 'api_errors' => 'Cập nhật người dùng vào Admin không thành công'], 500);
         }
-        $newUser = $this->userService->updateUser($request->all());
+        $newUser = $this->userService->updateUser($data);
         $paginatedUsers = $this->userService->getPaginatedUser();
         return response()->json([
             'success' => 'Cập nhật khách hàng thành công',
