@@ -71,7 +71,7 @@ class UserService
                 'sub_wallet' => $sub_wallet ?? 0,
                 'prefix' => $data['prefix'],
             ]);
-            //Mail::to($data['email'])->send(new UserRegistered($user, $password));
+            Mail::to($data['email'])->send(new UserRegistered($user, $password));
             DB::commit();
             return $user;
         } catch (Exception $e) {
