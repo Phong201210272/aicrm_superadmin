@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/add-transaction', [TransactionController::class, 'store']);
+Route::post('/deduct-money-from-user-wallet/{id}/{deductionMoney}', [TransactionController::class, 'deductMoneyFromAdminWallet']);

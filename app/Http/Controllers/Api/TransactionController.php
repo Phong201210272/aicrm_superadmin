@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,40 @@ class TransactionController extends Controller
             DB::rollBack();
             Log::error('Failed to create transaction: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to create transaction'], 500);
+        }
+    }
+    public function deductMoneyFromAdminWallet($id, $deductionMoney)
+    {
+
+        DB::beginTransaction();
+
+        try {
+
+            $user = User::find($id);
+            if (!$user) {
+                throw new Exception("User not found.");
+            }
+
+
+            if ($deductionMoney > $user->sub_wallet && $deductionMoney > $user->wallet) {
+                Log::error('Số tiền trong cả hai ví không đủ để thực hiện giao dịch.');
+                return response()->json(['error' => 'Số tiền trong cả hai ví không đủ'], 422);
+            }
+            if ($deductionMoney <= $user->sub_wallet) {
+                $user->sub_wallet -= $deductionMoney;
+            } elseif ($deductionMoney <= $user->wallet) {
+                $user->wallet -= $deductionMoney;
+            }
+
+            // Lưu thay đổi
+            $user->save();
+
+            DB::commit();
+            return response()->json(['success' => 'Transaction completed successfully', 'user' => $user], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Deduct money error: ' . $e->getMessage());
+            return response()->json(['error' => 'Transaction failed'], 500);
         }
     }
 }
