@@ -88,7 +88,8 @@
         }
 
         .btn-warning,
-        .btn-danger {
+        .btn-danger,
+        .btn-primary {
             border-radius: 20px;
             padding: 5px 15px;
             font-size: 14px;
@@ -97,7 +98,8 @@
         }
 
         .btn-warning:hover,
-        .btn-danger:hover {
+        .btn-danger:hover,
+        .btn-primary:hover {
             transform: scale(1.05);
         }
 

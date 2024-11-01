@@ -152,8 +152,6 @@ class UserController extends Controller
             if ($response2->getStatusCode() !== 200) {
                 throw new Exception('Failed to add automation to Admin');
             }
-
-
             $automationRateApiUrl = 'http://127.0.0.1:8001/api/automation-rate';
 
             $rateClient = new Client();
