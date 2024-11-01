@@ -7,6 +7,8 @@
             <th>Tên khách hàng</th>
             <th>SĐT</th>
             <th>Email</th>
+            <th>Ví chính</th>
+            <th>Ví phụ</th>
             <th>Địa chỉ</th>
             <th>Ngày bắt đầu</th>
             <th>Ngày hết hạn</th>
@@ -22,7 +24,9 @@
                     <td>{{ $value->name ?? '' }}</td>
                     <td>{{ $value->phone ?? '' }}</td>
                     <td>{{ $value->email ?? 'Chưa có email' }}</td>
-                    <td>{{ $value->address ?? '' }}</td>
+                    <td>{{ number_format($value->wallet)}}</td>
+                    <td>{{ number_format($value->sub_wallet) }}</td>
+                    <td>{{ \Str::limit($value->address,50) }}</td>
                     <td>{{ Carbon\Carbon::parse($value->created_at)->format('d/m/Y') }}</td>
                     <td>{{ Carbon\Carbon::parse($value->expired_at)->format('d/m/Y') }}</td>
                     <td style="text-align:center">

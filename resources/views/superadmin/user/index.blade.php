@@ -391,6 +391,9 @@
                     <p><strong>Email:</strong> <span id="client-email"></span></p>
                     <p><strong>Địa chỉ:</strong> <span id="client-address"></span></p>
                     <p><strong>Mã số thuế:</strong> <span id="client-tax-number"></span></p>
+                    <p><strong>Ví chính:</strong><span id="client-wallet"></span></p>
+                    <p><strong>Ví phụ:</strong><span id="client-sub-wallet"></span></p>
+                    <p><strong>Tiền tố:</strong><span id="client-prefix"></span></p>
                 </div>
             </div>
         </div>
@@ -479,6 +482,12 @@
                         document.getElementById('client-address').textContent = data.address || '';
                         document.getElementById('client-tax-number').textContent = data.tax_number ||
                             'Chưa có mã số thuế';
+                        document.getElementById('client-wallet').textContent = data.wallet ||
+                            'Chưa nạp tiền ví chính';
+                        document.getElementById('client-sub-wallet').textContent = data.sub_wallet ||
+                            'Chưa nạp tiền ví phụ';
+                        document.getElementById('client-prefix').textContent = data.prefix ||
+                            'Chưa có tiền tố';
 
                         $('#clientModal').modal('show');
                     });
