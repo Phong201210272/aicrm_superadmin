@@ -9,7 +9,11 @@
             <th>Email</th>
             <th>Ví chính</th>
             <th>Ví phụ</th>
+<<<<<<< HEAD
             {{-- <th>Địa chỉ</th> --}}
+=======
+            <th>Địa chỉ</th>
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             <th>Ngày bắt đầu</th>
             <th>Ngày hết hạn</th>
             <th style="text-align: center">Hành động</th>
@@ -24,6 +28,7 @@
                     <td>{{ $value->name ?? '' }}</td>
                     <td>{{ $value->phone ?? '' }}</td>
                     <td>{{ $value->email ?? 'Chưa có email' }}</td>
+<<<<<<< HEAD
                     <td>{{ number_format($value->wallet) }}</td>
                     <td>{{ number_format($value->sub_wallet) }}</td>
                     {{-- <td>{{ \Str::limit($value->address,50) }}</td> --}}
@@ -37,6 +42,22 @@
                             class="btn btn-warning open-edit-modal"><i class="fa-solid fa-wrench"></i></a>
                         <a href="javascript:void(0)" class="btn btn-danger delete-user-btn"
                             data-id="{{ $value->id }}"><i class="fa-solid fa-trash"></i></a>
+=======
+                    <td>{{ number_format($value->wallet)}}</td>
+                    <td>{{ number_format($value->sub_wallet) }}</td>
+                    <td>{{ \Str::limit($value->address,50) }}</td>
+                    <td>{{ Carbon\Carbon::parse($value->created_at)->format('d/m/Y') }}</td>
+                    <td>{{ Carbon\Carbon::parse($value->expired_at)->format('d/m/Y') }}</td>
+                    <td style="text-align:center">
+                        <a href="#" id="{{ $value->id }}" data-bs-toggle="modal" data-bs-target="#editUserModal" class="btn btn-primary editUserIcon"><i
+                                class="fas fa-user-edit"></i></a>
+                        <a class="btn btn-warning" href="javascript:void(0)" id="user-detail"
+                            data-id="{{ $value->id }}">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                        {{-- <a href="#" id="{{ $value->id }}" class="btn btn-danger deleteUserButton"><i class="fas fa-trash-alt"></i></a> --}}
+                        <button id="{{ $value->id }}" class="btn btn-danger deleteUserButton"><i class="fas fa-trash-alt"></i></button>
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                     </td>
                 </tr>
             @endforeach

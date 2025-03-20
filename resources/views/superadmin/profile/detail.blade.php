@@ -171,7 +171,11 @@
                             enctype="multipart/form-data">
                             @csrf
                             <div class="row">
+<<<<<<< HEAD
                                 <div class="form-group col-lg-3">
+=======
+                                <div class="form-group col-lg-4">
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                                     <label for="name" class="form-label">Tên</label>
                                     <input id="name" class="form-control @error('name') is-invalid @enderror"
                                         name="name" type="text" value="{{ old('name', $sa->name) }}">
@@ -181,8 +185,15 @@
                                         </span>
                                     @enderror
                                 </div>
+<<<<<<< HEAD
 
                                 <div class="form-group col-lg-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input id="email" class="form-control @error('email') is-invalid @enderror"
+                                        name="email" type="email" value="{{ old('email', $sa->email) }}">
+                                    @error('email')
+=======
+                                <div class="form-group col-lg-4">
                                     <label for="email" class="form-label">Email</label>
                                     <input id="email" class="form-control @error('email') is-invalid @enderror"
                                         name="email" type="email" value="{{ old('email', $sa->email) }}">
@@ -192,6 +203,43 @@
                                         </span>
                                     @enderror
                                 </div>
+                                <div class="form-group col-lg-4">
+                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <input id="phone" class="form-control @error('phone') is-invalid @enderror"
+                                        name="phone" type="text" value="{{ old('phone', $sa->phone) }}">
+                                    @error('phone')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>      
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label for="bank_name" class="form-label">Ngân hàng</label>
+                                    <select name="bank_id" id="bank" class="form-control">
+                                        <option value="">-------- Chọn ngân hàng --------</option>
+                                        @foreach ($bank as $item)
+                                            <option @selected($sa->bank_id == $item->id) value="{{ $item->id }}">
+                                                {{ $item->shortName . ' - ' . $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="bank_account" class="form-label">Số tài khoản</label>
+                                    <input id="bank_account"
+                                        class="form-control @error('bank_account') is-invalid @enderror" name="bank_account"
+                                        type="text"
+                                        value="{{ old('bank_account', isset($sa) ? $sa->bank_account : '') }}">
+                                    @error('bank_account')
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+<<<<<<< HEAD
 
                                 <div class="form-group col-lg-3">
                                     <label for="phone" class="form-label">Số điện thoại</label>
@@ -209,12 +257,35 @@
                                     <input id="company_name" class="form-control @error('company_name') is-invalid @enderror"
                                         name="company_name" type="text" value="{{ old('company_name', $sa->company_name) }}">
                                     @error('company_name')
+=======
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label for="bank_company_id" class="form-label">Ngân hàng</label>
+                                    <select name="bank_company_id" id="bank" class="form-control">
+                                        <option value="">-------- Chọn ngân hàng --------</option>
+                                        @foreach ($bank as $item)
+                                            <option @selected($sa->bank_company_id == $item->id) value="{{ $item->id }}">
+                                                {{ $item->shortName . ' - ' . $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="bank_company_account" class="form-label">Số tài khoản công ty</label>
+                                    <input id="bank_company_account"
+                                        class="form-control @error('bank_company_account') is-invalid @enderror" name="bank_company_account"
+                                        type="text"
+                                        value="{{ old('bank_company_account', isset($sa) ? $sa->bank_company_account : '') }}">
+                                    @error('bank_company_account')
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
                             </div>
+<<<<<<< HEAD
 
                             <div class="row">
                                 <div class="form-group col-lg-6">
@@ -276,6 +347,8 @@
                                 </div>
                             </div>
 
+=======
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                             <div class="row">
                                 <div class="col-lg-12 d-flex justify-content-between">
                                     <div>
@@ -299,6 +372,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </form>
 
                     </div>
@@ -317,8 +391,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+<<<<<<< HEAD
                     <form method="POST" action="{{ route('super.update', ['id' => $sa->id]) }}"
                         enctype="multipart/form-data">
+=======
+                    <form id="changePasswordForm" action="" method="POST">
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                         @csrf
                         @method('PUT') <!-- Sử dụng phương thức PUT nếu bạn đang cập nhật thông tin -->
 

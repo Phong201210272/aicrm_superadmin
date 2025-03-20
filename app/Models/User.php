@@ -38,8 +38,12 @@ class User extends Authenticatable
         'expired_at',
         'username',
         'sub_wallet',
+<<<<<<< HEAD
         'prefix',
         'parent_id',
+=======
+        'prefix'
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
     ];
 
     protected $hidden = [

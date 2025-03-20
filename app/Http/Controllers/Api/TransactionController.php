@@ -32,7 +32,10 @@ class TransactionController extends Controller
             return response()->json(['error' => 'Failed to create transaction'], 500);
         }
     }
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
     public function deductMoneyFromAdminWallet($id, $deductionMoney)
     {
 
@@ -47,8 +50,13 @@ class TransactionController extends Controller
 
 
             if ($deductionMoney > $user->sub_wallet && $deductionMoney > $user->wallet) {
+<<<<<<< HEAD
                 Log::error('S? ti?n trong c? hai v� kh�ng d? d? th?c hi?n giao d?ch.');
                 return response()->json(['error' => 'S? ti?n trong c? hai v� kh�ng d?'], 422);
+=======
+                Log::error('Số tiền trong cả hai ví không đủ để thực hiện giao dịch.');
+                return response()->json(['error' => 'Số tiền trong cả hai ví không đủ'], 422);
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             }
             if ($deductionMoney <= $user->sub_wallet) {
                 $user->sub_wallet -= $deductionMoney;
@@ -56,7 +64,11 @@ class TransactionController extends Controller
                 $user->wallet -= $deductionMoney;
             }
 
+<<<<<<< HEAD
             // Luu thay d?i
+=======
+            // Lưu thay đổi
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             $user->save();
 
             DB::commit();
@@ -66,5 +78,9 @@ class TransactionController extends Controller
             Log::error('Deduct money error: ' . $e->getMessage());
             return response()->json(['error' => 'Transaction failed'], 500);
         }
+<<<<<<< HEAD
     }	
+=======
+    }
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 }

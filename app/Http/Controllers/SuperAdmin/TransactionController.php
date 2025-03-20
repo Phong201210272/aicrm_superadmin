@@ -77,22 +77,27 @@ class TransactionController extends Controller
             $transaction = $this->transactionService->confirmTransaction($id);
 
             //Gửi Api sang admin để cập nhật trạng thái giao dịch
+<<<<<<< HEAD
             $adminApiUrl = 'http://aicrm.vn/api/confirm-transaction/' . $id;
             $client = new Client();
+=======
+            // $adminApiUrl = 'https://aicrm/api/confirm-transaction/' . $id;
+            // $client = new Client();
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 
-            $response = $client->post($adminApiUrl, [
-                'form_params' => [
-                    'status' => $transaction->status,
-                    'notification' => $transaction->notification,
-                    'amount' => $transaction->amount,
-                    'user_id' => $transaction->user_id,
-                ]
-            ]);
+            // $response = $client->post($adminApiUrl, [
+            //     'form_params' => [
+            //         'status' => $transaction->status,
+            //         'notification' => $transaction->notification,
+            //         'amount' => $transaction->amount,
+            //         'user_id' => $transaction->user_id,
+            //     ]
+            // ]);
 
-            //Kiểm tra phản hồi từ Admin
-            if ($response->getStatusCode() !== 200) {
-                throw new Exception('Failed to confirm transaction in Admin');
-            }
+            // //Kiểm tra phản hồi từ Admin
+            // if ($response->getStatusCode() !== 200) {
+            //     throw new Exception('Failed to confirm transaction in Admin');
+            // }
             // session()->flash('success', 'Đã xác nhận giao dịch');
             return response()->json(['success' => true]);
         } catch (Exception $e) {
@@ -106,6 +111,7 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->rejectTransaction($id);
 
+<<<<<<< HEAD
             $adminApiUrl = 'http://aicrm.vn/api/reject-transaction/' . $id;
             $client = new Client();
             $response = $client->post($adminApiUrl, [
@@ -114,11 +120,21 @@ class TransactionController extends Controller
                     'notification' => $transaction->notification,
                 ]
             ]);
+=======
+            // $adminApiUrl = 'https://aicrm/api/reject-transaction/' . $id;
+            // $client = new Client();
+            // $response = $client->post($adminApiUrl, [
+            //     'form_params' => [
+            //         'status' => $transaction->status,
+            //         'notification' => $transaction->notification,
+            //     ]
+            // ]);
+>>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 
-            if($response->getStatusCode() !== 200)
-            {
-                throw new Exception('Failed to reject transaction in Admin');
-            }
+            // if($response->getStatusCode() !== 200)
+            // {
+            //     throw new Exception('Failed to reject transaction in Admin');
+            // }
             // session()->flash('success', 'Đã từ chối xác nhận giao dịch');
             return response()->json(['success' => true]);
         } catch (Exception $e) {
