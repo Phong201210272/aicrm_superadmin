@@ -90,11 +90,7 @@ class TransferService
             // Commit transaction
             DB::commit();
 
-<<<<<<< HEAD
             $adminApiUrl = 'https://aicrm.vn/api/transfer';
-=======
-            // $adminApiUrl = 'https://aicrm.vn/api/transfer';
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 
             // $client = new Client();
             // $response = $client->post($adminApiUrl, [

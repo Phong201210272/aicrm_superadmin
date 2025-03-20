@@ -14,10 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-<<<<<<< HEAD
 use Illuminate\Validation\ValidationException;
-=======
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 
 class UserController extends Controller
 {
@@ -84,12 +81,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-<<<<<<< HEAD
         $validated = $request->validate([
-=======
-        // Validate dữ liệu đầu vào
-        $validator = Validator::make($request->all(), [
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|numeric|digits:10|unique:users,phone',
@@ -97,7 +89,6 @@ class UserController extends Controller
             'field' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',
             'tax_code' => 'nullable|numeric',
-<<<<<<< HEAD
             'sub_wallet' => 'nullable',
             'prefix' => 'required|unique:users,prefix',
             'wallet' => 'nullable',
@@ -137,64 +128,10 @@ class UserController extends Controller
             ]);
 
             if ($response->getStatusCode() !== 200) {
-=======
-            'username' => 'required|unique:users,username',
-            'sub_wallet' => 'nullable',
-            'prefix' => 'required|unique:users,prefix'
-        ], [
-            'name.required' => 'Vui lòng điền tên khách hàng',
-            'email.required' => 'Vui lòng điền email khách hàng',
-            'phone.required' => 'Vui lòng điền số điện thoại khách hàng',
-            'address.required' => 'Vui lòng điền địa chỉ khách hàng',
-            'username.required' => 'Vui lòng điền tên tài khoản khách hàng',
-            'prefix.required' => 'Vui lòng điền tiền tố tài khoản',
-            'prefix.unique' => 'Tiền tố đã tồn tại',
-            'name.max' => 'Tên không được quá :max ký tự',
-            'username.unique' => 'Tên tài khoản đã tồn tại',
-            'username.required' => 'Tên tài khoản không được trống',
-            'phone.required' => 'Số điện thoại không được trống',
-            'phone.numeric' => 'Số điện thoại phải là số.',
-            'phone.digits' => 'Số điện thoại phải đủ 10 ký tự.',
-            'phone.unique' => 'Số điện thoại này đã tồn tại.',
-            'email.required' => 'Email không được trống',
-            'email.email' => 'Email không đúng định dạng.',
-            'email.unique' => 'Email này đã tồn tại.',
-            'tax_code.numeric' => 'Mã số thuế phải là số.',
-            'address.required' => 'Vui lòng điền địa chỉ khách hàng'
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => true,
-                'validation_errors' => $validator->errors()
-            ]);
-        }
-        try {
-            //Gửi request tới API của Admin
-            $data = $request->all();
-
-            $password = '123456';
-            $hashedPassword = Hash::make($password);
-            $sub_wallet = preg_replace('/[^\d]/', '', $request->sub_wallet);
-            $data['role_id'] = 1; // Thêm role_id vào dữ liệu gửi đi
-            $data['password'] = $hashedPassword;
-            $sub_wallet = preg_replace('/[^\d]/', '', $request->sub_wallet);
-            if (empty($sub_wallet)) {
-                $sub_wallet = 0; // Giá trị mặc định là 0 nếu không có giá trị
-            }
-            $data['sub_wallet'] = $sub_wallet;
-            $monthExpiredAt = (int) $request->expired_at;
-            $data['expired_at'] = Carbon::now()->addMonths($monthExpiredAt)->toDateTimeString();
-            Log::info($data);
-            //Gửi request tới API của Admin
-            $adminApiUrl = 'http://127.0.0.1:8001/api/add-user';
-            $response = Http::withoutVerifying()->post($adminApiUrl, $data);
-            if (!$response->successful()) {
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                 throw new Exception('Failed to add user to Admin');
                 return response()->json(['error' => 'Thêm người dùng vào Admin không thành công'], 500);
             }
 
-<<<<<<< HEAD
             Log::info('User added to Admin successfully');
 
             // Automation APIs
@@ -213,34 +150,6 @@ class UserController extends Controller
 
             Log::info('All automation tasks completed successfully.');
 
-=======
-            // Thêm người dùng mới
-            $newUser = $this->userService->addNewUser($data);
-            $automationUserApiUrl = 'http://127.0.0.1:8001/api/automation-user';
-
-            $client2 = new Client();
-            $response2 = $client2->post($automationUserApiUrl, [
-                'form_params' => [
-                    'user_id' => $newUser->id,
-                ]
-            ]);
-
-            if ($response2->getStatusCode() !== 200) {
-                throw new Exception('Failed to add automation to Admin');
-            }
-            $automationRateApiUrl = 'http://127.0.0.1:8001/api/automation-rate';
-
-            $rateClient = new Client();
-            $rateResponse = $rateClient->post($automationRateApiUrl, [
-                'form_params' => [
-                    'user_id' => $newUser->id,
-                ]
-            ]);
-
-            if ($rateResponse->getStatusCode() !== 200) {
-                throw new Exception('Failed to add automation rate to Admin');
-            }
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             // Lấy danh sách người dùng đã phân trang
             $paginatedUsers = $this->userService->getPaginatedUser();
 

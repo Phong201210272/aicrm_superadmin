@@ -51,14 +51,11 @@ class UserService
         $password = '123456';
         $hashedPassword = Hash::make($password);
         $sub_wallet = preg_replace('/[^\d]/', '', $data['sub_wallet']);
-<<<<<<< HEAD
         $wallet = preg_replace('/[^\d]/', '', $data['wallet']);
         $username = strtolower($data['prefix']);
         if (empty($wallet)) {
             $wallet = 0;
         }
-=======
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
         if (empty($sub_wallet)) {
             $sub_wallet = 0;
         }
@@ -71,21 +68,14 @@ class UserService
                 'company_name' => $data['company_name'],
                 'tax_code' => $data['tax_code'],
                 'address' => $data['address'],
-<<<<<<< HEAD
                 'expired_at' => Carbon::now()->addMonths(6),
-=======
-                'expired_at' => $data['expired_at'],
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
                 'field' => $data['field'],
                 'username' => $username,
                 'role_id' => 1,
                 'password' => $hashedPassword,
                 'sub_wallet' => $sub_wallet ?? 0,
                 'prefix' => $data['prefix'],
-<<<<<<< HEAD
                 'wallet' => $wallet,
-=======
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             ]);
             Mail::to($data['email'])->send(new UserRegistered($user, $password));
             DB::commit();
@@ -96,20 +86,12 @@ class UserService
             throw new Exception('Failed to add new user');
         }
     }
-<<<<<<< HEAD
     public function updateUser(array $data, $id)
-=======
-    public function updateUser(array $data)
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
     {
         DB::beginTransaction();
         try {
             Log::info('Updating user');
-<<<<<<< HEAD
             $user = $this->user->findOrFail($id);
-=======
-            $user = $this->user->where('phone', $data['phone'])->first();
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             if (!$user) {
                 throw new Exception('User not found');
             }
@@ -121,18 +103,11 @@ class UserService
                 'tax_code' => $data['tax_code'],
                 'address' => $data['address'],
                 'field' => $data['field'],
-<<<<<<< HEAD
                 'sub_wallet' => $sub_wallet ?? 0,
                 'prefix' => $data['prefix'],
             ]);
             DB::commit();
             Log::info('user updated successfully');
-=======
-                'username' => $data['username'],
-                'expired_at' => $data['expired_at']
-            ]);
-            DB::commit();
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             return $user;
         } catch (Exception $e) {
             DB::rollBack();
@@ -169,19 +144,14 @@ class UserService
             throw new Exception('Failed to delete client by phone');
         }
     }
-<<<<<<< HEAD
+
     public function deleteUser($id)
     {
         try {
             $user = User::findOrFail($id);
             $user->delete();
             return $user;
-=======
-    public function deleteUserById($id)
-    {
-        try {
-            return $this->user->findOrFail($id)->delete();
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
+
         } catch (Exception $e) {
             Log::error('Failed to delete this client by name: ' . $e->getMessage());
             throw new Exception('Failed to delete this client by name');

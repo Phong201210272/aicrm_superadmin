@@ -25,12 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/add-transaction', [TransactionController::class, 'store']);
 Route::post('/deduct-money-from-user-wallet/{id}/{deductionMoney}', [TransactionController::class, 'deductMoneyFromAdminWallet']);
-<<<<<<< HEAD
 Route::post('/add-associate', [AssociateController::class, 'store']);
 Route::post('delete-associate', [AssociateController::class, 'delete']);
 Route::post('update-associate', [AssociateController::class, 'update']);
 Route::post('add-zalo', [ZaloController::class, 'addZalo']);
 Route::post('add-message', [MessageController::class, 'addMessage']);
 Route::get('/get-banners', [SuperAdminController::class, 'getBanner']);
-=======
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf

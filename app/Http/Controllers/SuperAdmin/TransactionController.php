@@ -77,13 +77,8 @@ class TransactionController extends Controller
             $transaction = $this->transactionService->confirmTransaction($id);
 
             //Gửi Api sang admin để cập nhật trạng thái giao dịch
-<<<<<<< HEAD
             $adminApiUrl = 'http://aicrm.vn/api/confirm-transaction/' . $id;
             $client = new Client();
-=======
-            // $adminApiUrl = 'https://aicrm/api/confirm-transaction/' . $id;
-            // $client = new Client();
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 
             // $response = $client->post($adminApiUrl, [
             //     'form_params' => [
@@ -111,7 +106,6 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->rejectTransaction($id);
 
-<<<<<<< HEAD
             $adminApiUrl = 'http://aicrm.vn/api/reject-transaction/' . $id;
             $client = new Client();
             $response = $client->post($adminApiUrl, [
@@ -120,16 +114,6 @@ class TransactionController extends Controller
                     'notification' => $transaction->notification,
                 ]
             ]);
-=======
-            // $adminApiUrl = 'https://aicrm/api/reject-transaction/' . $id;
-            // $client = new Client();
-            // $response = $client->post($adminApiUrl, [
-            //     'form_params' => [
-            //         'status' => $transaction->status,
-            //         'notification' => $transaction->notification,
-            //     ]
-            // ]);
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
 
             // if($response->getStatusCode() !== 200)
             // {

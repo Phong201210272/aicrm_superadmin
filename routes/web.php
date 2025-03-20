@@ -157,15 +157,9 @@ Route::middleware(CheckLoginSuperAdmin::class)->prefix('super-admin')->name('sup
         Route::get('search', [SuperAdminUserController::class, 'search'])->name('search');
         Route::post('store', [SuperAdminUserController::class, 'store'])->name('store');
         Route::get('detail/{id}', [SuperAdminUserController::class, 'detail'])->name('detail');
-<<<<<<< HEAD
-        // Route::get('/edit/{id}', [SuperAdminUserController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [SuperAdminUserController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [SuperAdminUserController::class, 'delete'])->name('delete');
-=======
         Route::get('/edit' , [SuperAdminUserController::class , 'edit'])->name('edit');
         Route::post('/update' , [SuperAdminUserController::class , 'update'])->name('update');
         Route::delete('/delete', [SuperAdminUserController::class, 'delete'])->name('delete');
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
     });
     Route::prefix('transaction')->name('transaction.')->group(function () {
         Route::get('', [SuperAdminTransactionController::class, 'index'])->name('index');
@@ -191,13 +185,9 @@ Route::middleware(CheckLoginSuperAdmin::class)->prefix('super-admin')->name('sup
     //     Route::post('update-status/{id}', [CampaignController::class, 'updateStatus'])->name('updateStatus');
     // });
     Route::prefix('zalo')->name('zalo.')->group(function () {
-<<<<<<< HEAD
         Route::get('', [ZaloController::class, 'index'])->name('index');
         Route::post('store', [ZaloController::class, 'store'])->name('store');
         Route::get('search', [ZaloController::class, 'search'])->name('search');
-=======
-        Route::post('store', [ZaloController::class, 'store'])->name('store');
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
         Route::get('zns', [ZaloController::class, 'index'])->name('zns');
         Route::get('/get-active-oa-name', [ZaloController::class, 'getActiveOaName'])->name('getActiveOaName');
         Route::post('/update-oa-status/{oaId}', [ZaloController::class, 'updateOaStatus'])->name('updateOaStatus');

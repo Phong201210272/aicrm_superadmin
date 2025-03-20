@@ -49,7 +49,6 @@ class SuperAdminController extends Controller
 
     public function updateSuperAdminInfo(Request $request, $id)
     {
-<<<<<<< HEAD
         // dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -61,12 +60,6 @@ class SuperAdminController extends Controller
             'company_bank_id' => 'nullable',
             'company_name' => 'nullable',
 
-=======
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => ['required', 'regex:/^((03|05|07|08|09)+([0-9]{8}))$/', 'unique:super_admins,phone,' . $id],
-            'email' => 'required|email|unique:users,email,' . $id,
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
         ], [
             'name.required' => 'Tên không được để trống.',
             'name.string' => 'Tên phải là chuỗi ký tự.',
@@ -78,23 +71,11 @@ class SuperAdminController extends Controller
             'email.email' => 'Email phải là một địa chỉ email hợp lệ.',
             'email.unique' => 'Email này đã tồn tại.',
         ]);
-<<<<<<< HEAD
 
         //  dd($validated);
 
         try {
             $sa = SuperAdmin::findOrFail($id);
-=======
-        try {
-            Log::info($request->all());
-            $apiUrlSuperAdminUpdate = 'http://127.0.0.1:8001/api/update/super_admin';
-            $response = Http::post($apiUrlSuperAdminUpdate, $request->all());
-            if (!$response->successful()) {
-                session()->flash('error', 'Thay đổi thông tin không thành công');
-                return redirect()->back();
-            }
-            $sa = $this->adminService->updateSuperAdmin($id, $request->all());
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             // dd($sa);
 
             // Kiểm tra và xử lý banner cũ
@@ -122,14 +103,7 @@ class SuperAdminController extends Controller
             // Cập nhật thông tin người dùng trong session
             $authUser = session('authSuper');
             $authUser->name = $sa->name;
-<<<<<<< HEAD
             $authUser->email = $sa->email;
-=======
-            // dd($authUser->name);
-            $authUser->email =  $sa->email;
-            // dd($authUser->email);
-            // $authUser->user_info->img_url = $sa->user_info->img_url;
->>>>>>> 0d6658eae0575da3f06b35dd224ccc62429babbf
             session(['authSuper' => $authUser]);
             $updateSuperAdminApiUrl = config('app.api_url') . '/api/update-super-admin';
             $client = new Client();
