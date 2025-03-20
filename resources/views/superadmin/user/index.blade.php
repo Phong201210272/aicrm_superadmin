@@ -88,7 +88,8 @@
         }
 
         .btn-warning,
-        .btn-danger {
+        .btn-danger,
+        .btn-primary {
             border-radius: 20px;
             padding: 5px 15px;
             font-size: 14px;
@@ -97,7 +98,8 @@
         }
 
         .btn-warning:hover,
-        .btn-danger:hover {
+        .btn-danger:hover,
+        .btn-primary:hover {
             transform: scale(1.05);
         }
 
@@ -194,30 +196,28 @@
                         <!-- Họ tên -->
                         <div class="mb-3">
                             <label for="name" class="form-label">Họ tên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name">
                             <small id="name-error" class="text-danger"></small>
                         </div>
 
-                        <!-- Tên tài khoản -->
+                        <!-- Tiền tố -->
                         <div class="mb-3">
-                            <label for="name" class="form-label">Tên tài khoản <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                            <small id="username-error" class="text-danger"></small>
+                            <label for="prefix" class="form-label">Tiền tố<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="prefix" name="prefix" maxlength="5">
+                            <small id="prefix-error" class="text-danger"></small>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email">
                             <small id="email-error" class="text-danger"></small>
                         </div>
 
                         <!-- Số điện thoại -->
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Số điện thoại <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
+                            <label for="phone" class="form-label">Số điện thoại<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="phone" name="phone">
                             <small id="phone-error" class="text-danger"></small>
                         </div>
 
@@ -252,9 +252,103 @@
                         <!-- Nạp tiền cho người dùng -->
 
                         <div class="mb-3">
-                            <label for="sub_wallet" class="form-label">Nạp tiền</label>
+                            <label for="wallet" class="form-label">Nạp tiền ví chính</label>
+                            <input type="text" class="form-control" id="wallet" name="wallet">
+                            <small id="wallet-error" class="text-danger"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sub_wallet" class="form-label">Nạp tiền ví phụ</label>
                             <input type="text" class="form-control" id="sub_wallet" name="sub_wallet">
                             <small id="tax_code-error" class="text-danger"></small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Xác nhận</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editClientModalLabel">Chỉnh sửa khách hàng khách hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-client-form">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" id="edit-client-id" name="id">
+                        <!-- Họ tên -->
+                        <div class="mb-3">
+                            <label for="edit-name" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit-name" name="name">
+                            <small id="edit-name-error" class="text-danger"></small>
+                        </div>
+                        <!-- Tiền tố -->
+                        <div class="mb-3">
+                            <label for="edit-prefix" class="form-label">Tiền tố<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit-prefix" name="prefix" maxlength="5">
+                            <small id="edit-prefix-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="edit-email" class="form-label">Email<span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="edit-email" name="email">
+                            <small id="edit-email-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="mb-3">
+                            <label for="edit-phone" class="form-label">Số điện thoại<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit-phone" name="phone">
+                            <small id="phone-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Địa chỉ -->
+                        <div class="mb-3">
+                            <label for="edit-address" class="form-label">Địa chỉ <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit-address" name="address">
+                            <small id="edit-address-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Ngành nghề -->
+                        <div class="mb-3">
+                            <label for="edit-field" class="form-label">Ngành nghề</label>
+                            <input type="text" class="form-control" id="edit-field" name="field">
+                            <small id="edit-field-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Tên công ty -->
+                        <div class="mb-3">
+                            <label for="edit-company_name" class="form-label">Tên công ty</label>
+                            <input type="text" class="form-control" id="edit-company_name" name="company_name">
+                            <small id="edit-company_name-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Mã số thuế -->
+                        <div class="mb-3">
+                            <label for="edit-tax_code" class="form-label">Mã số thuế</label>
+                            <input type="text" class="form-control" id="edit-tax_code" name="tax_code">
+                            <small id="edit-tax_code-error" class="text-danger"></small>
+                        </div>
+
+                        <!-- Nạp tiền cho người dùng -->
+
+                        <div class="mb-3">
+                            <label for="edit-wallet" class="form-label">Nạp tiền ví chính</label>
+                            <input type="text" class="form-control" id="edit-wallet" name="wallet">
+                            <small id="edit-wallet-error" class="text-danger"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-sub_wallet" class="form-label">Nạp tiền ví phụ</label>
+                            <input type="text" class="form-control" id="edit-sub_wallet" name="sub_wallet">
+                            <small id="edit-sub_wallet-error" class="text-danger"></small>
                         </div>
                         <button type="submit" class="btn btn-primary">Xác nhận</button>
                     </form>
@@ -288,6 +382,140 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/0.2.0/js/bootstrap-notify.min.js"></script>
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $(document).on('click', '.delete-user-btn', function() {
+                let userId = $(this).data('id'); // Lấy ID của người dùng từ thuộc tính data-id
+                let deleteUrl = "{{ route('super.user.delete', ':id') }}";
+                deleteUrl = deleteUrl.replace(':id', userId); // URL API xóa người dùng
+
+                if (confirm('Bạn có chắc chắn muốn xóa người dùng này không?')) {
+                    $.ajax({
+                        url: deleteUrl, // URL API
+                        type: 'DELETE', // Phương thức HTTP
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công',
+                                    text: response.success,
+                                });
+                                // Cập nhật bảng người dùng
+                                $('#table-content').html(response.html);
+                                $('#pagination-links').html(response.pagination);
+                            } else {
+                                console.log('Response failed:', response);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: response.message ||
+                                        'Có lỗi xảy ra, vui lòng thử lại',
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = "Có lỗi xảy ra, vui lòng thử lại sau.";
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: errorMessage,
+                            });
+                            console.error('AJAX Error:', xhr);
+                        }
+                    });
+                }
+            });
+
+            //mở modal sửa thông tin người dùng
+            $(document).on('click', '.open-edit-modal', function() {
+                let clientId = $(this).data('id');
+                let url = "{{ route('super.user.detail', ':id') }}";
+                url = url.replace(':id', clientId);
+
+                $.get(url, function(data) {
+                    $('#edit-client-id').val(data.id);
+                    $('#edit-name').val(data.name);
+                    $('#edit-username').val(data.username);
+                    $('#edit-prefix').val(data.prefix);
+                    $('#edit-email').val(data.email);
+                    $('#edit-phone').val(data.phone);
+                    $('#edit-address').val(data.address);
+                    $('#edit-field').val(data.field);
+                    $('#edit-company_name').val(data.company_name);
+                    $('#edit-tax_number').val(data.tax_number);
+                    $('#edit-wallet').val(data.wallet);
+                    $('#edit-sub_wallet').val(data.sub_wallet);
+
+                    $('#editClientModal').modal('show');
+                });
+            });
+
+            //Chỉnh sửa khách hàng
+            $('#edit-client-form').on('submit', function(e) {
+                e.preventDefault();
+                let clientId = $('#edit-client-id').val();
+                let url = "{{ route('super.user.update', ':id') }}";
+                url = url.replace(':id', clientId);
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#editClientModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công',
+                                text: response.success,
+                            });
+                            $('#table-content').html(response.html);
+                            $('#pagination-links').html(response.pagination);
+                        } else {
+                            console.log('Response failed:', response);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: response.message ||
+                                    'Có lỗi xảy ra, vui lòng thử lại',
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        let errorMessage = "Có lỗi xảy ra, vui lòng thử lại sau.";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: errorMessage,
+                        });
+                        console.error('AJAX Error:', xhr);
+                    }
+                });
+            });
+
+            $('#wallet').on('input', function() {
+                let value = $(this).val();
+
+                // Loại bỏ các ký tự không phải số
+                value = value.replace(/[^\d]/g, '');
+
+                // Định dạng số với dấu phẩy
+                if (value) {
+                    $(this).val(Number(value).toLocaleString());
+                } else {
+                    $(this).val(''); // Nếu không có giá trị, đặt lại ô input
+                }
+            });
             $('#sub_wallet').on('input', function() {
                 let value = $(this).val();
 
@@ -301,6 +529,18 @@
                     $(this).val(''); // Nếu không có giá trị, đặt lại ô input
                 }
             });
+
+            $('#prefix').on('input', function() {
+                let value = $(this).val().toUpperCase();
+                $(this).val(value);
+            });
+
+            $('#edit-prefix').on('input', function() {
+                let value = $(this).val().toUpperCase();
+                $(this).val(value);
+            });
+
+
             // Mở modal thêm khách hàng
             $('#open-add-modal').on('click', function() {
                 $('#add-client-form')[0].reset();
@@ -311,9 +551,6 @@
             // Thêm khách hàng mới
             $('#add-client-form').on('submit', function(e) {
                 e.preventDefault();
-
-                // Xóa thông báo lỗi trước đó (nếu có)
-                $('small.text-danger').text('');
 
                 $.ajax({
                     url: "{{ route('super.user.store') }}",
@@ -332,34 +569,23 @@
                         }
                     },
                     error: function(xhr) {
-                        if (xhr.status === 422) {
-                            // Lấy lỗi từ server và hiển thị dưới mỗi input
+                        if (xhr.status === 422) { // Lỗi Validation
                             const errors = xhr.responseJSON.errors;
 
-                            if (errors.username) {
-                                $('#username-error').text(errors.username[0]);
-                            }
-                            if (errors.name) {
-                                $('#name-error').text(errors.name[0]);
-                            }
-                            if (errors.email) {
-                                $('#email-error').text(errors.email[0]);
-                            }
-                            if (errors.phone) {
-                                $('#phone-error').text(errors.phone[0]);
-                            }
-                            if (errors.address) {
-                                $('#address-error').text(errors.address[0]);
-                            }
-                            if (errors.field) {
-                                $('#field-error').text(errors.field[0]);
-                            }
-                            if (errors.company_name) {
-                                $('#company_name-error').text(errors.company_name[0]);
-                            }
-                            if (errors.tax_code) {
-                                $('#tax_code-error').text(errors.tax_code[0]);
-                            }
+                            // Xóa thông báo lỗi cũ
+                            $('small.text-danger').text('');
+
+                            // Hiển thị lỗi dưới mỗi input
+                            $.each(errors, function(key, value) {
+                                $('#' + key + '-error').text(value[0]);
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi Server',
+                                text: xhr.responseJSON?.message ||
+                                    'Có lỗi xảy ra, vui lòng thử lại.',
+                            });
                         }
                     }
                 });

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
+use App\Models\User;
 use App\Models\ZaloOa;
+use App\Models\ZnsMessage;
+use App\Services\ZaloOaService;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
@@ -13,114 +17,107 @@ use Illuminate\Support\Facades\Log;
 
 class ZaloController extends Controller
 {
+    protected $zaloService;
+    public function __construct(ZaloOaService $zaloService)
+    {
+        $this->zaloService = $zaloService;
+    }
     public function index()
     {
-        $connectedApps = ZaloOa::all();
-
-        return view('superadmin.zalo.oa', compact('connectedApps'));
-    }
-    public function updateOaStatus($oaId)
-    {
         try {
-            // Vô hiệu hóa tất cả các OA khác
-            ZaloOa::query()->update(['is_active' => 0]);
+            // Lấy ID của người dùng không có parent_id
+            $parentUserIds = User::whereNull('parent_id')->orWhere('parent_id', '')->pluck('id');
 
-            // Kích hoạt OA được chọn
-            $activeOa = ZaloOa::where('oa_id', $oaId)->first();
-            $activeOa->is_active = 1;
-            $activeOa->save();
+            // Lấy danh sách OA (ZaloOa) theo user_id
+            $zaloOas = ZaloOa::whereIn('user_id', $parentUserIds)
+                ->orderByDesc('created_at')
+                ->paginate(10);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Trạng thái OA được cập nhật thành công.',
-                'activeOaName' => $activeOa->name,
-                'accessToken' => $activeOa->access_token,
-                'refreshToken' => $activeOa->refresh_token
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lỗi khi cập nhật trạng thái OA.',
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
+            // Lấy mảng oa_id từ các ZaloOa đã truy vấn
+            $oaIds = $zaloOas->pluck('oa_id')->unique();
 
-    public function refreshAccessToken()
-    {
-        try {
-            $activeOa = ZaloOa::where('is_active', 1)->first();
+            // Đếm số tin nhắn của các OA có oa_id giống nhau
+            foreach ($zaloOas as $zaloOa) {
+                // Lấy tất cả các OA có cùng oa_id
+                $matchingOas = ZaloOa::where('oa_id', $zaloOa->oa_id)->get();
 
-            if (!$activeOa) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không tìm thấy OA đang kích hoạt.'
-                ]);
+                // Đếm số tin nhắn cho các OA này
+                $zaloOa->message_count = ZnsMessage::whereIn('oa_id', $matchingOas->pluck('id'))->count();
             }
 
-            $refreshToken = $activeOa->refresh_token;
-            $secretKey = env('ZALO_APP_SECRET');
-            $appId = env('ZALO_APP_ID');
-
-            $client = new Client();
-            $response = $client->post('https://oauth.zaloapp.com/v4/oa/access_token', [
-                'headers' => [
-                    'secret_key' => $secretKey,
-                ],
-                'form_params' => [
-                    'grant_type' => 'refresh_token',
-                    'refresh_token' => $refreshToken,
-                    'app_id' => $appId,
-                ]
-            ]);
-
-            $body = json_decode($response->getBody()->getContents(), true);
-
-            if (isset($body['access_token'])) {
-                // Cập nhật access token vào cơ sở dữ liệu
-                $activeOa->access_token = $body['access_token'];
-                if (isset($body['refresh_token'])) {
-                    $activeOa->refresh_token = $body['refresh_token'];
-                }
-                $activeOa->save();
-
-                // Cập nhật access token vào cache
-                Cache::put('access_token', $body['access_token'], 86400); // 24 giờ
-                Cache::put('access_token_expiration', now()->addHours(24), 86400);
-
-                if (isset($body['refresh_token'])) {
-                    Cache::put('refresh_token', $body['refresh_token'], 7776000); // 90 ngày
-                }
+            if (request()->ajax()) {
+                $table = view('superadmin.zalo.table', compact('zaloOas'))->render();
+                $pagination = $zaloOas->links('vendor.pagination.custom')->toHtml();
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Access token đã được làm mới và lưu vào cache thành công.',
-                    'new_access_token' => $body['access_token'],
-                    'new_refresh_token' => $body['refesh_token']
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không thể làm mới access token.'
+                    'html' => $table,
+                    'pagination' => $pagination,
                 ]);
             }
+
+            return view('superadmin.zalo.index', compact('zaloOas'));
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Đã xảy ra lỗi khi làm mới access token.',
-                'error' => $e->getMessage()
-            ]);
+            Log::error('Lỗi khi lấy danh sách OA: ' . $e->getMessage());
+            return ApiResponse::error('Lỗi khi lấy danh sách OA', 500);
         }
     }
 
-    public function getActiveOaName()
+
+
+    public function search(Request $request)
     {
-        $activeOa = ZaloOa::where('is_active', 1)->first();
+        try {
+            $query = $request->input('query');
+            Log::info('Start finding OA with OA ID or name equals to ' . $query);
+            // Kiểm tra query là số hay chữ
+            if (preg_match('/\d/', $query)) {
+                $zaloOaQuery = $this->zaloService->getOaByOaId($query);
+            } else {
+                $zaloOaQuery = $this->zaloService->getOaByName($query);
+            }
+            Log::info('OA found successfully, start counting oas messages');
+            $parentUserIds = User::whereNull('parent_id')->orWhere('parent_id', '')->pluck('id');
 
-        if ($activeOa) {
-            return response()->json(['active_oa_name' => $activeOa->name]);
+            // Lấy danh sách OA (ZaloOa) theo user_id
+            $zaloOas = $zaloOaQuery->whereIn('user_id', $parentUserIds)
+                ->orderByDesc('created_at')
+                ->paginate(10);
+
+            // Lấy mảng oa_id từ các ZaloOa đã truy vấn
+            $oaIds = $zaloOas->pluck('oa_id')->unique();
+
+            // Đếm số tin nhắn của các OA có oa_id giống nhau
+            foreach ($zaloOas as $zaloOa) {
+                // Lấy tất cả các OA có cùng oa_id
+                $matchingOas = ZaloOa::where('oa_id', $zaloOa->oa_id)->get();
+
+                // Đếm số tin nhắn cho các OA này
+                $zaloOa->message_count = ZnsMessage::whereIn('oa_id', $matchingOas->pluck('id'))->count();
+            }
+
+            Log::info('finish');
+
+            if ($request->expectsJson()) {
+                Log::info('Detected AJAX request, rendering partial view.');
+                $html = view('superadmin.zalo.table', compact('zaloOas'))->render();
+                $pagination = $zaloOas->appends(['query' => $query])->links();
+
+                Log::info('Response HTML:', ['html' => $html]);
+                Log::info('Pagination Debug:', ['pagination_data' => $zaloOas->toArray()]);
+
+                return response()->json([
+                    'html' => $html,
+                    'pagination' => $pagination
+                ]);
+            }
+
+
+            Log::info('redering view without ajax request');
+            return view('superadmin.zalo.index', compact('zaloOas'));
+        } catch (Exception $e) {
+            Log::error('Lỗi tìm kiếm ZaloOa: ' . $e->getMessage());
+            return response()->json(['error' => 'Không thể tìm kiếm OA'], 500);
         }
-
-        return response()->json(['active_oa_name' => null]);
     }
 }

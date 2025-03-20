@@ -18,7 +18,7 @@
                         <tr>
                             <td>{{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->index + 1 }}
                             </td>
-                            <td>{{ $value->user->name }}</td>
+                            <td>{{ $value->user->name ?? '' }}</td>
                             <td>{{ number_format($value->amount) ?? '' }}</td>
                             <td>{{ $value->description ?? '' }}</td>
                             <td>{{ $value->created_at ?? '' }}</td>

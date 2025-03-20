@@ -18,6 +18,10 @@ class SuperAdmin extends Authenticatable
         'password',
         'bank_id',
         'bank_account',
+        'company_bank_id',
+        'company_bank_account',
+        'company_name',
+        'banner',
     ];
 
     public function bank()

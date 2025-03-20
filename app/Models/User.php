@@ -37,7 +37,9 @@ class User extends Authenticatable
         'source',
         'expired_at',
         'username',
-        'sub_wallet'
+        'sub_wallet',
+        'prefix',
+        'parent_id',
     ];
 
     protected $hidden = [

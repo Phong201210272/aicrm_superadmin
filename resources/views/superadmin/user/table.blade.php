@@ -3,10 +3,13 @@
     <thead>
         <tr>
             <th>STT</th>
+            <th>Tiền tố</th>
             <th>Tên khách hàng</th>
             <th>SĐT</th>
             <th>Email</th>
-            <th>Địa chỉ</th>
+            <th>Ví chính</th>
+            <th>Ví phụ</th>
+            {{-- <th>Địa chỉ</th> --}}
             <th>Ngày bắt đầu</th>
             <th>Ngày hết hạn</th>
             <th style="text-align: center">Hành động</th>
@@ -17,16 +20,23 @@
             @foreach ($users as $key => $value)
                 <tr>
                     <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->index + 1 }}</td>
+                    <td>{{ $value->prefix ?? '' }}</td>
                     <td>{{ $value->name ?? '' }}</td>
                     <td>{{ $value->phone ?? '' }}</td>
                     <td>{{ $value->email ?? 'Chưa có email' }}</td>
-                    <td>{{ $value->address ?? '' }}</td>
+                    <td>{{ number_format($value->wallet) }}</td>
+                    <td>{{ number_format($value->sub_wallet) }}</td>
+                    {{-- <td>{{ \Str::limit($value->address,50) }}</td> --}}
                     <td>{{ Carbon\Carbon::parse($value->created_at)->format('d/m/Y') }}</td>
                     <td>{{ Carbon\Carbon::parse($value->expired_at)->format('d/m/Y') }}</td>
                     <td style="text-align:center">
-                        <a class="btn btn-warning" href="javascript:void(0)" id="user-detail" data-id="{{ $value->id }}">
+                        <a class="btn btn-primary" href="javascript:void(0)" id="user-detail" data-id="{{ $value->id }}">
                             <i class="fa-solid fa-eye"></i>
                         </a>
+                        <a href="javascript:void(0)" data-id="{{ $value->id }}"
+                            class="btn btn-warning open-edit-modal"><i class="fa-solid fa-wrench"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-danger delete-user-btn"
+                            data-id="{{ $value->id }}"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             @endforeach

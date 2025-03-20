@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\UserRegistered;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 
@@ -24,7 +26,7 @@ class UserService
     public function getPaginatedUser()
     {
         try {
-            return $this->user->orderByDesc('created_at')->paginate(10);
+            return $this->user->where('role_id', 1)->orderByDesc('created_at')->paginate(10);
         } catch (Exception $e) {
             Log::error('Failed to get paginated user list: ' . $e->getMessage());
             throw new Exception('Failed to get paginated user list');
@@ -44,10 +46,19 @@ class UserService
 
     public function  addNewUser(array $data)
     {
+        // dd($data);
         DB::beginTransaction();
         $password = '123456';
         $hashedPassword = Hash::make($password);
         $sub_wallet = preg_replace('/[^\d]/', '', $data['sub_wallet']);
+        $wallet = preg_replace('/[^\d]/', '', $data['wallet']);
+        $username = strtolower($data['prefix']);
+        if (empty($wallet)) {
+            $wallet = 0;
+        }
+        if (empty($sub_wallet)) {
+            $sub_wallet = 0;
+        }
         try {
             Log::info('Creating new user');
             $user = $this->user->create([
@@ -57,19 +68,51 @@ class UserService
                 'company_name' => $data['company_name'],
                 'tax_code' => $data['tax_code'],
                 'address' => $data['address'],
-                'expired_at' => Carbon::now()->addMonths(6), // Cộng 6 tháng vào thời gian hiện tại
+                'expired_at' => Carbon::now()->addMonths(6),
                 'field' => $data['field'],
-                'username' => $data['username'],
+                'username' => $username,
                 'role_id' => 1,
                 'password' => $hashedPassword,
                 'sub_wallet' => $sub_wallet ?? 0,
+                'prefix' => $data['prefix'],
+                'wallet' => $wallet,
             ]);
+            Mail::to($data['email'])->send(new UserRegistered($user, $password));
             DB::commit();
             return $user;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Failed to add new user: ' . $e->getMessage());
             throw new Exception('Failed to add new user');
+        }
+    }
+    public function updateUser(array $data, $id)
+    {
+        DB::beginTransaction();
+        try {
+            Log::info('Updating user');
+            $user = $this->user->findOrFail($id);
+            if (!$user) {
+                throw new Exception('User not found');
+            }
+            $user->update([
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'email' => $data['email'],
+                'company_name' => $data['company_name'],
+                'tax_code' => $data['tax_code'],
+                'address' => $data['address'],
+                'field' => $data['field'],
+                'sub_wallet' => $sub_wallet ?? 0,
+                'prefix' => $data['prefix'],
+            ]);
+            DB::commit();
+            Log::info('user updated successfully');
+            return $user;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to update user: ' . $e->getMessage());
+            throw new Exception('Failed to update user');
         }
     }
 
@@ -90,6 +133,26 @@ class UserService
         } catch (Exception $e) {
             Log::error('Failed to find this client by name: ' . $e->getMessage());
             throw new Exception('Failed to find this client by name');
+        }
+    }
+    public function deleteUserByPhone($phone)
+    {
+        try {
+            return $this->user->where('phone', $phone)->firstOrFail()->delete();
+        } catch (Exception $e) {
+            Log::error('Failed to delete client by phone: ' . $e->getMessage());
+            throw new Exception('Failed to delete client by phone');
+        }
+    }
+    public function deleteUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return $user;
+        } catch (Exception $e) {
+            Log::error('Failed to delete this client by name: ' . $e->getMessage());
+            throw new Exception('Failed to delete this client by name');
         }
     }
     public function authenticateUser($credentials)
@@ -123,8 +186,7 @@ class UserService
     public function getQualifiedUsers()
     {
         try {
-            return $this->user->where('wallet', '>', 0)
-                ->orderBy('name', 'asc') // Sắp xếp theo trường name theo thứ tự tăng dần
+            return $this->user->orderBy('name', 'asc')
                 ->paginate(10);
         } catch (Exception $e) {
             Log::error('Failed to get qualified users: ' . $e->getMessage());
